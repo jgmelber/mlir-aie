@@ -140,7 +140,8 @@ def run_flow(opts, tmpdirname):
       else:
         do_call(['aie-opt', '--aie-create-flows', file_with_addresses, '-o', file_physical]);
       if(opt.airbin):
-        do_call(['aie-translate', '--aie-generate-airbin', file_physical])
+        file_airbin = os.path.join(tmpdirname, 'aie.airbin')
+        do_call(['aie-translate', '--aie-generate-airbin', file_physical, '-o', file_airbin])
       else:
         file_inc_cpp = os.path.join(tmpdirname, 'aie_inc.cpp')
         if(opts.xaie == 2):
