@@ -141,7 +141,7 @@ def run_flow(opts, tmpdirname):
       else:
         do_call(['aie-opt', '--aie-create-flows', '--aie-lower-broadcast-packet', '--aie-create-packet-flows', file_with_addresses, '-o', file_physical]);
       if(opts.airbin):
-	file_airbin = os.path.join(tmpdirname, 'air.bin')
+        file_airbin = os.path.join(tmpdirname, 'air.bin')
         do_call(['aie-translate', '--aie-generate-airbin', file_physical, '-o', file_airbin])
       else:
         file_inc_cpp = os.path.join(tmpdirname, 'aie_inc.cpp')
