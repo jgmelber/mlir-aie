@@ -140,9 +140,9 @@ def run_flow(opts, tmpdirname):
         do_call(['aie-opt', '--aie-create-pathfinder-flows', '--aie-lower-broadcast-packet', '--aie-create-packet-flows', file_with_addresses, '-o', file_physical]);
       else:
         do_call(['aie-opt', '--aie-create-flows', '--aie-lower-broadcast-packet', '--aie-create-packet-flows', file_with_addresses, '-o', file_physical]);
-      file_inc_cpp = os.path.join(tmpdirname, 'aie_inc.cpp')
-      if(opts.xaie == 2):
-          do_call(['aie-translate', '--aie-generate-xaie', '--xaie-target=v2', file_physical, '-o', file_inc_cpp])
+      if(opts.airbin):
+	file_airbin = os.path.join(tmpdirname, 'air.bin')
+        do_call(['aie-translate', '--aie-generate-airbin', file_physical, '-o', file_airbin])
       else:
         file_inc_cpp = os.path.join(tmpdirname, 'aie_inc.cpp')
         if(opts.xaie == 2):
