@@ -411,7 +411,7 @@ An op to start DMA
 Syntax:
 
 ```
-operation ::= `AIE.dmaStart` `(` $dmaChan `,` $dest `,` $chain `)` attr-dict
+operation ::= `AIE.dmaStart` `(` $channelDir `,` $channelIndex `,` $dest `,` $chain `)` attr-dict
 ```
 
 This operation declares a DMA channel to be used for data transfer.  It usually exists inside
@@ -439,7 +439,8 @@ Traits: HasParent<MemOp, func::FuncOp, ShimDMAOp>, Terminator
 
 | Attribute | MLIR Type | Description |
 | :-------: | :-------: | ----------- |
-| `dmaChan` | xilinx::AIE::DMAChanAttr | DMA Channel number
+| `channelDir` | xilinx::AIE::DMAChannelDirAttr | DMA Channel direction
+| `channelIndex` | ::mlir::IntegerAttr | 32-bit signless integer attribute whose minimum value is 0 whose maximum value is 1
 
 #### Results:
 
@@ -1052,7 +1053,7 @@ Operation that produces the acquire/release patterns for a process registered to
 Syntax:
 
 ```
-operation ::= `AIE.objectFifo.registerProcess` attr-dict `<` $port `>` `(` $fifo `:` type($fifo) `,` $acquirePattern `:` type($acquirePattern) `,` $releasePattern `:` type($releasePattern) `,` $callee `,` $length`)`
+operation ::= `AIE.objectFifo.registerProcess` attr-dict `<` $port `>` `(` $fifo `:` type($fifo) `,` $acquirePatternTensor `:` type($acquirePatternTensor) `,` $releasePatternTensor `:` type($releasePatternTensor) `,` $callee `,` $length`)`
 ```
 
 The "aie.registerProcess" operation allows the user to register a function to an objectFifo along with its 
@@ -1089,8 +1090,8 @@ If the input patterns are cyclo-static then they must be of the same size.
 | Operand | Description |
 | :-----: | ----------- |
 | `fifo` | AIE objectFifo type
-| `acquirePattern` | tensor of 32-bit signless integer values
-| `releasePattern` | tensor of 32-bit signless integer values
+| `acquirePatternTensor` | tensor of 32-bit signless integer values
+| `releasePatternTensor` | tensor of 32-bit signless integer values
 | `length` | index
 
 ### `AIE.objectFifo.release` (::xilinx::AIE::ObjectFifoReleaseOp)
