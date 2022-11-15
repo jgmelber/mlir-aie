@@ -203,16 +203,6 @@ class flow_runner:
         elif(opts.link):
           await self.do_call(task, ['clang', '-O2', '--target=aie', file_core_obj, me_basic_o, libm, libc,
                             '-Wl,-T,'+file_core_ldscript, '-Wl,--gc-sections', '-o', file_core_elf])
-        do_call(['aie-opt', '--aie-create-flows', '--aie-lower-broadcast-packet', '--aie-create-packet-flows', file_with_addresses, '-o', file_physical]);
-      if(opts.airbin):
-        file_airbin = os.path.join(tmpdirname, 'air.bin')
-        do_call(['aie-translate', '--aie-generate-airbin', file_physical, '-o', file_airbin])
-      else:
-        file_inc_cpp = os.path.join(tmpdirname, 'aie_inc.cpp')
-        if(opts.xaie == 2):
-          do_call(['aie-translate', '--aie-generate-xaie', '--xaie-target=v2', file_physical, '-o', file_inc_cpp])
-        else:
-          do_call(['aie-translate', '--aie-generate-xaie', '--xaie-target=v1', file_physical, '-o', file_inc_cpp])
 
       self.progress_bar.update(self.progress_bar.task_completed,advance=1)
       if(task):
@@ -231,11 +221,15 @@ class flow_runner:
       # Generate the included host interface
       file_physical = os.path.join(self.tmpdirname, 'input_physical.mlir')
       await self.do_call(task, ['aie-opt', '--aie-create-pathfinder-flows', '--aie-lower-broadcast-packet', '--aie-create-packet-flows', '--aie-lower-multicast', self.file_with_addresses, '-o', file_physical]);
-      file_inc_cpp = os.path.join(self.tmpdirname, 'aie_inc.cpp')
-      if(opts.xaie == 1):
-          await self.do_call(task, ['aie-translate', '--aie-generate-xaie', '--xaie-target=v1', file_physical, '-o', file_inc_cpp])
+      if(opts.airbin):
+        file_airbin = os.path.join(self.tmpdirname, 'air.bin')
+        await self.do_call(task, ['aie-translate', '--aie-generate-airbin', file_physical, '-o', file_airbin])
       else:
-          await self.do_call(task, ['aie-translate', '--aie-generate-xaie', '--xaie-target=v2', file_physical, '-o', file_inc_cpp])
+        file_inc_cpp = os.path.join(self.tmpdirname, 'aie_inc.cpp')
+        if(opts.xaie == 1):
+            await self.do_call(task, ['aie-translate', '--aie-generate-xaie', '--xaie-target=v1', file_physical, '-o', file_inc_cpp])
+        else:
+            await self.do_call(task, ['aie-translate', '--aie-generate-xaie', '--xaie-target=v2', file_physical, '-o', file_inc_cpp])
 
       cmd = ['clang','-std=c++11']
       if(opts.host_target):
