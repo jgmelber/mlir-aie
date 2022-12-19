@@ -828,6 +828,7 @@ void XAieDma_TileBdSetPkt(XAieDma_Tile *DmaInstPtr, u8 BdNum, u8 PktEn,
         if (bdNum != 0xFFU) {
 
           uint32_t chNum = op.getChannelIndex();
+          if (op.getChannelDir() == DMAChannelDir::MM2S) chNum += 2; 
           // switch (op.dmaChan()) {
           // case DMAChan::S2MM0:
           //  chNum = 0;
