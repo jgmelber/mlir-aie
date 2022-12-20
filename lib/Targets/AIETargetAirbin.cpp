@@ -24,7 +24,7 @@
 #include <utility>     // pair
 #include <vector>
 
-#include "aie/AIEDialect.h"
+#include "aie/Dialect/AIE/IR/AIEDialect.h"
 #include "aie/AIENetlistAnalysis.h"
 
 #include "AIETargets.h"
@@ -625,7 +625,7 @@ static void configure_dmas(mlir::ModuleOp module, NetlistAnalysis &NL) {
       int acqValue = 0, relValue = 0;
       auto acqEnable = disable;
       auto relEnable = disable;
-      Optional<int> lockID = llvm::NoneType::None;
+      Optional<int> lockID = llvm::None;
 
       for (auto op : block.getOps<UseLockOp>()) {
         LockOp lock = dyn_cast<LockOp>(op.getLock().getDefiningOp());
@@ -1415,7 +1415,7 @@ void XAieTile_StrmConfigSlv(XAieGbl_Tile *TileInstPtr, u8 Slave, u8 Enable,
     }
   }
 
-  Optional<TileAddress> currentTile = llvm::NoneType::None;
+  Optional<TileAddress> currentTile = llvm::None;
   for (auto op : module.getOps<ShimMuxOp>()) {
     Region &r = op.getConnections();
     Block &b = r.front();
