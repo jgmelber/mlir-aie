@@ -3,6 +3,10 @@ module attributes {llvm.target_triple = "aie2"} {
   llvm.mlir.global external @in_cons_buff_0() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @infactor_cons_buff_1() {addr_space = 0 : i32} : !llvm.array<1 x i32>
   llvm.mlir.global external @infactor_cons_buff_0() {addr_space = 0 : i32} : !llvm.array<1 x i32>
+  llvm.mlir.global external @in0to1_buff_1() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
+  llvm.mlir.global external @in0to1_buff_0() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
+  llvm.mlir.global external @in1to2_buff_1() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
+  llvm.mlir.global external @in1to2_buff_0() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @in2to3_buff_1() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @in2to3_buff_0() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @out_buff_1() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
@@ -17,17 +21,189 @@ module attributes {llvm.target_triple = "aie2"} {
   llvm.mlir.global external @out_cons() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @out() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @in2to3() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
+  llvm.mlir.global external @in1to2() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
+  llvm.mlir.global external @in0to1() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @infactor_cons() {addr_space = 0 : i32} : !llvm.array<1 x i32>
   llvm.mlir.global external @infactor() {addr_space = 0 : i32} : !llvm.array<1 x i32>
   llvm.mlir.global external @in_cons() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.mlir.global external @in() {addr_space = 0 : i32} : !llvm.array<1024 x i32>
   llvm.func @vector_scalar_mul_aie_scalar(!llvm.ptr, !llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
-  llvm.func @core_0_3() {
+  llvm.func @core_0_5() {
     %0 = llvm.mlir.addressof @out_buff_1 : !llvm.ptr
     %1 = llvm.mlir.addressof @in2to3_buff_1 : !llvm.ptr
     %2 = llvm.mlir.addressof @out_buff_0 : !llvm.ptr
     %3 = llvm.mlir.constant(31 : index) : i64
     %4 = llvm.mlir.addressof @in2to3_buff_0 : !llvm.ptr
+    %5 = llvm.mlir.constant(49 : i32) : i32
+    %6 = llvm.mlir.constant(0 : i32) : i32
+    %7 = llvm.mlir.constant(48 : i32) : i32
+    %8 = llvm.mlir.constant(1 : i32) : i32
+    %9 = llvm.mlir.constant(1024 : index) : i64
+    %10 = llvm.mlir.constant(-1 : i32) : i32
+    %11 = llvm.mlir.constant(2 : index) : i64
+    %12 = llvm.mlir.constant(4 : index) : i64
+    %13 = llvm.mlir.constant(0 : index) : i64
+    %14 = llvm.mlir.constant(1 : index) : i64
+    %15 = llvm.mlir.constant(9223372036854775807 : index) : i64
+    llvm.br ^bb1(%13 : i64)
+  ^bb1(%16: i64):  // 2 preds: ^bb0, ^bb10
+    %17 = llvm.icmp "slt" %16, %15 : i64
+    llvm.cond_br %17, ^bb2(%13 : i64), ^bb11
+  ^bb2(%18: i64):  // 2 preds: ^bb1, ^bb9
+    %19 = llvm.icmp "slt" %18, %12 : i64
+    llvm.cond_br %19, ^bb3, ^bb10
+  ^bb3:  // pred: ^bb2
+    llvm.call @llvm.aie2.acquire(%7, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%8, %10) : (i32, i32) -> ()
+    llvm.br ^bb4(%13 : i64)
+  ^bb4(%20: i64):  // 2 preds: ^bb3, ^bb5
+    %21 = llvm.icmp "slt" %20, %9 : i64
+    llvm.cond_br %21, ^bb5, ^bb6
+  ^bb5:  // pred: ^bb4
+    %22 = llvm.getelementptr %4[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %23 = llvm.ptrtoint %22 : !llvm.ptr to i64
+    %24 = llvm.and %23, %3  : i64
+    %25 = llvm.icmp "eq" %24, %13 : i64
+    llvm.intr.assume %25 : i1
+    %26 = llvm.getelementptr %22[%20] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    %27 = llvm.load %26 : !llvm.ptr -> i32
+    %28 = llvm.getelementptr %2[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %29 = llvm.ptrtoint %28 : !llvm.ptr to i64
+    %30 = llvm.and %29, %3  : i64
+    %31 = llvm.icmp "eq" %30, %13 : i64
+    llvm.intr.assume %31 : i1
+    %32 = llvm.getelementptr %28[%20] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    llvm.store %27, %32 : i32, !llvm.ptr
+    %33 = llvm.add %20, %14 : i64
+    llvm.br ^bb4(%33 : i64)
+  ^bb6:  // pred: ^bb4
+    llvm.call @llvm.aie2.release(%6, %8) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%5, %8) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%7, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%8, %10) : (i32, i32) -> ()
+    llvm.br ^bb7(%13 : i64)
+  ^bb7(%34: i64):  // 2 preds: ^bb6, ^bb8
+    %35 = llvm.icmp "slt" %34, %9 : i64
+    llvm.cond_br %35, ^bb8, ^bb9
+  ^bb8:  // pred: ^bb7
+    %36 = llvm.getelementptr %1[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %37 = llvm.ptrtoint %36 : !llvm.ptr to i64
+    %38 = llvm.and %37, %3  : i64
+    %39 = llvm.icmp "eq" %38, %13 : i64
+    llvm.intr.assume %39 : i1
+    %40 = llvm.getelementptr %36[%34] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    %41 = llvm.load %40 : !llvm.ptr -> i32
+    %42 = llvm.getelementptr %0[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %43 = llvm.ptrtoint %42 : !llvm.ptr to i64
+    %44 = llvm.and %43, %3  : i64
+    %45 = llvm.icmp "eq" %44, %13 : i64
+    llvm.intr.assume %45 : i1
+    %46 = llvm.getelementptr %42[%34] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    llvm.store %41, %46 : i32, !llvm.ptr
+    %47 = llvm.add %34, %14 : i64
+    llvm.br ^bb7(%47 : i64)
+  ^bb9:  // pred: ^bb7
+    llvm.call @llvm.aie2.release(%6, %8) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%5, %8) : (i32, i32) -> ()
+    %48 = llvm.add %18, %11 : i64
+    llvm.br ^bb2(%48 : i64)
+  ^bb10:  // pred: ^bb2
+    %49 = llvm.add %16, %14 : i64
+    llvm.br ^bb1(%49 : i64)
+  ^bb11:  // pred: ^bb1
+    llvm.return
+  }
+  llvm.func @core_0_4() {
+    %0 = llvm.mlir.addressof @in2to3_buff_1 : !llvm.ptr
+    %1 = llvm.mlir.addressof @in1to2_buff_1 : !llvm.ptr
+    %2 = llvm.mlir.addressof @in2to3_buff_0 : !llvm.ptr
+    %3 = llvm.mlir.constant(31 : index) : i64
+    %4 = llvm.mlir.addressof @in1to2_buff_0 : !llvm.ptr
+    %5 = llvm.mlir.constant(49 : i32) : i32
+    %6 = llvm.mlir.constant(0 : i32) : i32
+    %7 = llvm.mlir.constant(48 : i32) : i32
+    %8 = llvm.mlir.constant(1 : i32) : i32
+    %9 = llvm.mlir.constant(1024 : index) : i64
+    %10 = llvm.mlir.constant(-1 : i32) : i32
+    %11 = llvm.mlir.constant(2 : index) : i64
+    %12 = llvm.mlir.constant(4 : index) : i64
+    %13 = llvm.mlir.constant(0 : index) : i64
+    %14 = llvm.mlir.constant(1 : index) : i64
+    %15 = llvm.mlir.constant(9223372036854775807 : index) : i64
+    llvm.br ^bb1(%13 : i64)
+  ^bb1(%16: i64):  // 2 preds: ^bb0, ^bb10
+    %17 = llvm.icmp "slt" %16, %15 : i64
+    llvm.cond_br %17, ^bb2(%13 : i64), ^bb11
+  ^bb2(%18: i64):  // 2 preds: ^bb1, ^bb9
+    %19 = llvm.icmp "slt" %18, %12 : i64
+    llvm.cond_br %19, ^bb3, ^bb10
+  ^bb3:  // pred: ^bb2
+    llvm.call @llvm.aie2.acquire(%7, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%8, %10) : (i32, i32) -> ()
+    llvm.br ^bb4(%13 : i64)
+  ^bb4(%20: i64):  // 2 preds: ^bb3, ^bb5
+    %21 = llvm.icmp "slt" %20, %9 : i64
+    llvm.cond_br %21, ^bb5, ^bb6
+  ^bb5:  // pred: ^bb4
+    %22 = llvm.getelementptr %4[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %23 = llvm.ptrtoint %22 : !llvm.ptr to i64
+    %24 = llvm.and %23, %3  : i64
+    %25 = llvm.icmp "eq" %24, %13 : i64
+    llvm.intr.assume %25 : i1
+    %26 = llvm.getelementptr %22[%20] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    %27 = llvm.load %26 : !llvm.ptr -> i32
+    %28 = llvm.getelementptr %2[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %29 = llvm.ptrtoint %28 : !llvm.ptr to i64
+    %30 = llvm.and %29, %3  : i64
+    %31 = llvm.icmp "eq" %30, %13 : i64
+    llvm.intr.assume %31 : i1
+    %32 = llvm.getelementptr %28[%20] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    llvm.store %27, %32 : i32, !llvm.ptr
+    %33 = llvm.add %20, %14 : i64
+    llvm.br ^bb4(%33 : i64)
+  ^bb6:  // pred: ^bb4
+    llvm.call @llvm.aie2.release(%6, %8) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%5, %8) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%7, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%8, %10) : (i32, i32) -> ()
+    llvm.br ^bb7(%13 : i64)
+  ^bb7(%34: i64):  // 2 preds: ^bb6, ^bb8
+    %35 = llvm.icmp "slt" %34, %9 : i64
+    llvm.cond_br %35, ^bb8, ^bb9
+  ^bb8:  // pred: ^bb7
+    %36 = llvm.getelementptr %1[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %37 = llvm.ptrtoint %36 : !llvm.ptr to i64
+    %38 = llvm.and %37, %3  : i64
+    %39 = llvm.icmp "eq" %38, %13 : i64
+    llvm.intr.assume %39 : i1
+    %40 = llvm.getelementptr %36[%34] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    %41 = llvm.load %40 : !llvm.ptr -> i32
+    %42 = llvm.getelementptr %0[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1024 x i32>
+    %43 = llvm.ptrtoint %42 : !llvm.ptr to i64
+    %44 = llvm.and %43, %3  : i64
+    %45 = llvm.icmp "eq" %44, %13 : i64
+    llvm.intr.assume %45 : i1
+    %46 = llvm.getelementptr %42[%34] : (!llvm.ptr, i64) -> !llvm.ptr, i32
+    llvm.store %41, %46 : i32, !llvm.ptr
+    %47 = llvm.add %34, %14 : i64
+    llvm.br ^bb7(%47 : i64)
+  ^bb9:  // pred: ^bb7
+    llvm.call @llvm.aie2.release(%6, %8) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%5, %8) : (i32, i32) -> ()
+    %48 = llvm.add %18, %11 : i64
+    llvm.br ^bb2(%48 : i64)
+  ^bb10:  // pred: ^bb2
+    %49 = llvm.add %16, %14 : i64
+    llvm.br ^bb1(%49 : i64)
+  ^bb11:  // pred: ^bb1
+    llvm.return
+  }
+  llvm.func @core_0_3() {
+    %0 = llvm.mlir.addressof @in1to2_buff_1 : !llvm.ptr
+    %1 = llvm.mlir.addressof @in0to1_buff_1 : !llvm.ptr
+    %2 = llvm.mlir.addressof @in1to2_buff_0 : !llvm.ptr
+    %3 = llvm.mlir.constant(31 : index) : i64
+    %4 = llvm.mlir.addressof @in0to1_buff_0 : !llvm.ptr
     %5 = llvm.mlir.constant(49 : i32) : i32
     %6 = llvm.mlir.constant(4 : i32) : i32
     %7 = llvm.mlir.constant(5 : i32) : i32
@@ -111,11 +287,11 @@ module attributes {llvm.target_triple = "aie2"} {
   llvm.func @core_0_2() {
     %0 = llvm.mlir.addressof @infactor_cons_buff_1 : !llvm.ptr
     %1 = llvm.mlir.addressof @in_cons_buff_1 : !llvm.ptr
-    %2 = llvm.mlir.addressof @in2to3_buff_1 : !llvm.ptr
+    %2 = llvm.mlir.addressof @in0to1_buff_1 : !llvm.ptr
     %3 = llvm.mlir.addressof @in_cons_buff_0 : !llvm.ptr
     %4 = llvm.mlir.addressof @infactor_cons_buff_0 : !llvm.ptr
     %5 = llvm.mlir.constant(31 : index) : i64
-    %6 = llvm.mlir.addressof @in2to3_buff_0 : !llvm.ptr
+    %6 = llvm.mlir.addressof @in0to1_buff_0 : !llvm.ptr
     %7 = llvm.mlir.constant(50 : i32) : i32
     %8 = llvm.mlir.constant(53 : i32) : i32
     %9 = llvm.mlir.constant(48 : i32) : i32

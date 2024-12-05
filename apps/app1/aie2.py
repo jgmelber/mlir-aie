@@ -33,48 +33,74 @@ def my_vector_scalar():
         # Tile declarations
         n_cols = 4
         n_comp = 4
-        shimtiles = []
-        comptiles = []
+        st = [] # Shim Tiles
+        mt = [] # Memory Tiles (currently not used)
+        ct = [] # Compute Tiles
         for i in range(n_cols):
             # Making the shim tiles
-            shimtiles.append(tile(i, 0))
+            st.append(tile(i, 0))
             # Making compute tiles
             c = []
             for j in range(n_comp):
                 c.append(tile(i, j+2))
-            comptiles.append(c)
-            
-            
-        ShimTile = shimtiles[0]
-        ComputeTile2 = comptiles[0][0]
-        ComputeTile3 = comptiles[0][1]
-        ComputeTile4 = comptiles[0][2]
-        ComputeTile5 = comptiles[0][3]
+            ct.append(c)
 
         # AIE-array data movement with object fifos
-        of_in = object_fifo("in", ShimTile, ComputeTile2, 2, tile_ty)
-        of_factor = object_fifo("infactor", ShimTile, ComputeTile2, 2, scalar_ty)
-        of_2to3 = object_fifo("in2to3", ComputeTile2, ComputeTile3, 2, tile_ty)
-        of_out = object_fifo("out", ComputeTile3, ShimTile, 2, tile_ty)
+        # Inputs from shim 00 to cmptile 00
+        of_in = object_fifo("in", st[0], ct[0][0], 2, tile_ty)
+        of_factor = object_fifo("infactor", st[0], ct[0][0], 2, scalar_ty)
+        
+        # Internal movements
+        # Column 0
+        of_0to1 = object_fifo("in0to1", ct[0][0], ct[0][1], 2, tile_ty)
+        of_1to2 = object_fifo("in1to2", ct[0][1], ct[0][2], 2, tile_ty)
+        of_2to3 = object_fifo("in2to3", ct[0][2], ct[0][3], 2, tile_ty)
+        
+        # Output
+        of_out = object_fifo("out", ct[0][3], st[0], 2, tile_ty)
 
         # Set up compute tiles
         # Compute tile 2
-        @core(ComputeTile2, "scale.o")
+        @core(ct[0][0], "scale.o")
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
-                elem_factor = of_factor.acquire(ObjectFifoPort.Consume, 1)
+                elem_factor = of_factor.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
                 # Number of sub-vector "tile" iterations
                 for _ in range_(ITER):
-                    elem_out = of_2to3.acquire(ObjectFifoPort.Produce, 1)
+                    elem_out = of_0to1.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_in.acquire(ObjectFifoPort.Consume, 1)
                     scale_scalar(elem_in, elem_out, elem_factor, TSIZE)
                     of_in.release(ObjectFifoPort.Consume, 1)
-                    of_2to3.release(ObjectFifoPort.Produce, 1)
+                    of_0to1.release(ObjectFifoPort.Produce, 1)
                 of_factor.release(ObjectFifoPort.Consume, 1)
         # Compute tile 3
-        # Just making a passthrough tile for now
-        @core(ComputeTile3, "scale.o")
+        # Just making a passthrough tiles for now
+        @core(ct[0][1])
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER):
+                    elem_out = of_1to2.acquire(ObjectFifoPort.Produce, 1)
+                    elem_in = of_0to1.acquire(ObjectFifoPort.Consume, 1)
+                    for i in range_(TSIZE):
+                        elem_out[i] = elem_in[i]
+                    of_0to1.release(ObjectFifoPort.Consume, 1)
+                    of_1to2.release(ObjectFifoPort.Produce, 1)
+        @core(ct[0][2])
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER):
+                    elem_out = of_2to3.acquire(ObjectFifoPort.Produce, 1)
+                    elem_in = of_1to2.acquire(ObjectFifoPort.Consume, 1)
+                    for i in range_(TSIZE):
+                        elem_out[i] = elem_in[i]
+                    of_1to2.release(ObjectFifoPort.Consume, 1)
+                    of_2to3.release(ObjectFifoPort.Produce, 1)
+        @core(ct[0][3])
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):

@@ -41,10 +41,10 @@ SECTIONS
 _sp_start_value_DM_stack = .;
 . += 0x400; /* stack */
 . = 0x40400;
-in2to3_buff_0 = .;
+in0to1_buff_0 = .;
 . += 0x1000;
 . = 0x41400;
-in2to3_buff_1 = .;
+in0to1_buff_1 = .;
 . += 0x1000;
 . = 0x43400;
 infactor_cons_buff_0 = .;
@@ -61,13 +61,18 @@ in_cons_buff_1 = .;
 /* No tile with memory exists to the west. */
 . = 0x50000;
 . += 0x10000;
+. = 0x60400;
+in2to3_buff_0 = .;
+. += 0x1000;
+. = 0x61400;
+in2to3_buff_1 = .;
+. += 0x1000;
 . = 0x70400;
-out_buff_0 = .;
+in1to2_buff_0 = .;
 . += 0x1000;
 . = 0x71400;
-out_buff_1 = .;
+in1to2_buff_1 = .;
 . += 0x1000;
   .bss : { *(.bss*) } > data
 }
-INPUT(scale.o)
 PROVIDE(main = core_0_3);
