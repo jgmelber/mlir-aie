@@ -25,9 +25,10 @@ def main(opts):
     # ------------------------------------------------------------
     # Configure this to match your design's buffer size and type
     # ------------------------------------------------------------
-    INOUT0_VOLUME = int(4096)  # Input only, 64x uint32_t in this example
+    MSIZE = 4096
+    INOUT0_VOLUME = int(MSIZE)  # Input only, 64x uint32_t in this example
     INOUT1_VOLUME = int(1)  # Input only, 1 uint32_t scale factor
-    INOUT2_VOLUME = int(4096)  # Output only, 64x uint32_t in this example
+    INOUT2_VOLUME = int(MSIZE)  # Output only, 64x uint32_t in this example
 
     INOUT0_DATATYPE = np.int32
     INOUT1_DATATYPE = np.int32
@@ -105,7 +106,8 @@ def main(opts):
             ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * scale_factor
             e = np.equal(output_buffer, ref)
             errors = errors + np.size(e) - np.count_nonzero(e)
-
+        for i in range(10):
+            print(output_buffer[i])
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)
