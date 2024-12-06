@@ -22,6 +22,7 @@ def my_vector_scalar():
     def device_body():
         tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.int32]]
         tile_ty = np.ndarray[(TSIZE,), np.dtype[np.int32]]
+        tile2_ty = np.ndarray[(4,), np.dtype[np.int32]]
         scalar_ty = np.ndarray[(1,), np.dtype[np.int32]]
 
         # AIE Core Function declarations
@@ -31,12 +32,17 @@ def my_vector_scalar():
         )
         passthrough = external_func(
             "passthrough",
-            inputs=[tile_ty, tile_ty, np.int32],
+            inputs=[tile_ty, scalar_ty, np.int32],
+        )
+
+        mean = external_func(
+            "mean",
+            inputs=[tile_ty, scalar_ty, np.int32],
         )
 
         # Tile declarations
         n_cols = 1
-        n_comp = 4
+        n_comp = 1
         st = [] # Shim Tiles
         mt = [] # Memory Tiles (currently not used)
         ct = [] # Compute Tiles
@@ -51,77 +57,35 @@ def my_vector_scalar():
 
         # AIE-array data movement with object fifos
         # Inputs from shim 00 to cmptile 00
-        of_in = object_fifo("in", st[0], ct[0][0], 2, tile_ty)
-        of_factor = object_fifo("infactor", st[0], ct[0][0], 2, scalar_ty)
+        of_in = object_fifo("in", st[0], ct[0][0], 2, tile_ty) # inputs 1024 int32
+        of_factor = object_fifo("infactor", st[0], ct[0][0], 2, scalar_ty) # inputs 1 int32
         
         # Internal movements
         # Column 0
-        of_0to1 = object_fifo("in0to1", ct[0][0], ct[0][1], 2, tile_ty)
-        of_1to2 = object_fifo("in1to2", ct[0][1], ct[0][2], 2, tile_ty)
-        of_2to3 = object_fifo("in2to3", ct[0][2], ct[0][3], 2, tile_ty)
         
         # Output
-        of_out = object_fifo("out", ct[0][3], st[0], 2, tile_ty)
+        of_out = object_fifo("out", ct[0][0], st[0], 2, scalar_ty) # outputs 1 int32
 
         # Set up compute tiles
         # Compute tile 2
-        @core(ct[0][0], "scale.o")
+        @core(ct[0][0], "mean.o")
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
-                elem_factor = of_factor.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
                 # Number of sub-vector "tile" iterations
                 for _ in range_(ITER):
-                    elem_out = of_0to1.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_in.acquire(ObjectFifoPort.Consume, 1)
-                    scale_scalar(elem_in, elem_out, elem_factor, TSIZE)
+                    elem_out = of_out.acquire(ObjectFifoPort.Produce, 1)  # acquiring 1 x int32
+                    elem_in = of_in.acquire(ObjectFifoPort.Consume, 1) # acquiring 1024 x int32
+                    mean(elem_in, elem_out, TSIZE)
                     of_in.release(ObjectFifoPort.Consume, 1)
-                    of_0to1.release(ObjectFifoPort.Produce, 1)
-                of_factor.release(ObjectFifoPort.Consume, 1)
-        # Compute tile 3
-        # Just making a passthrough tiles for now
-        @core(ct[0][1], "passthrough.o")
-        def core_body():
-            # Effective while(1)
-            for _ in range_(sys.maxsize):
-                # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
-                    elem_out = of_1to2.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_0to1.acquire(ObjectFifoPort.Consume, 1)
-                    passthrough(elem_in, elem_out, TSIZE)
-                    of_0to1.release(ObjectFifoPort.Consume, 1)
-                    of_1to2.release(ObjectFifoPort.Produce, 1)
-        @core(ct[0][2])
-        def core_body():
-            # Effective while(1)
-            for _ in range_(sys.maxsize):
-                # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
-                    elem_out = of_2to3.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_1to2.acquire(ObjectFifoPort.Consume, 1)
-                    for i in range_(TSIZE):
-                        elem_out[i] = elem_in[i]
-                    of_1to2.release(ObjectFifoPort.Consume, 1)
-                    of_2to3.release(ObjectFifoPort.Produce, 1)
-        @core(ct[0][3])
-        def core_body():
-            # Effective while(1)
-            for _ in range_(sys.maxsize):
-                # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
-                    elem_out = of_out.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_2to3.acquire(ObjectFifoPort.Consume, 1)
-                    for i in range_(TSIZE):
-                        elem_out[i] = elem_in[i]
-                    of_2to3.release(ObjectFifoPort.Consume, 1)
                     of_out.release(ObjectFifoPort.Produce, 1)
 
         # To/from AIE-array data movement
-        @runtime_sequence(tensor_ty, scalar_ty, tensor_ty)
+        @runtime_sequence(tensor_ty, scalar_ty, tile2_ty)
         def sequence(A, F, C):
             npu_dma_memcpy_nd(metadata=of_in, bd_id=1, mem=A, sizes=[1, 1, 1, MSIZE])
             npu_dma_memcpy_nd(metadata=of_factor, bd_id=2, mem=F, sizes=[1, 1, 1, 1])
-            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=C, sizes=[1, 1, 1, MSIZE])
+            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=C, sizes=[1, 1, 1, 4])
             # We know of_out will complete after of_in and of_factor, so it is sufficient to just wait for of_out
             dma_wait(of_out)
 
