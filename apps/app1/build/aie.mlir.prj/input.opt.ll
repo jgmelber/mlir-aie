@@ -24,6 +24,8 @@ declare void @llvm.aie2.release(i32, i32) #0
 
 declare void @vector_scalar_mul_aie_scalar(ptr, ptr, ptr, i32) local_unnamed_addr
 
+declare void @passthrough(ptr, ptr, i32) local_unnamed_addr
+
 ; Function Attrs: nounwind
 define void @core_0_5() local_unnamed_addr #0 {
 .new:
@@ -298,16 +300,15 @@ define void @core_0_4() local_unnamed_addr #0 {
   ret void
 }
 
-; Function Attrs: nounwind
-define void @core_0_3() local_unnamed_addr #0 {
+define void @core_0_3() local_unnamed_addr {
 .new:
-  %0 = and i64 ptrtoint (ptr @in0to1_buff_0 to i64), 28
+  %0 = and i64 ptrtoint (ptr @in1to2_buff_0 to i64), 28
   %1 = icmp eq i64 %0, 0
-  %2 = and i64 ptrtoint (ptr @in1to2_buff_0 to i64), 28
+  %2 = and i64 ptrtoint (ptr @in0to1_buff_0 to i64), 28
   %3 = icmp eq i64 %2, 0
-  %4 = and i64 ptrtoint (ptr @in0to1_buff_1 to i64), 28
+  %4 = and i64 ptrtoint (ptr @in1to2_buff_1 to i64), 28
   %5 = icmp eq i64 %4, 0
-  %6 = and i64 ptrtoint (ptr @in1to2_buff_1 to i64), 28
+  %6 = and i64 ptrtoint (ptr @in0to1_buff_1 to i64), 28
   %7 = icmp eq i64 %6, 0
   br label %.preheader
 
@@ -317,84 +318,84 @@ define void @core_0_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
   tail call void @llvm.assume(i1 %1)
   tail call void @llvm.assume(i1 %3)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
   tail call void @llvm.assume(i1 %5)
   tail call void @llvm.assume(i1 %7)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   %niter.next.3 = add nuw nsw i64 %niter, 4
@@ -407,24 +408,24 @@ define void @core_0_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
   tail call void @llvm.assume(i1 %1)
   tail call void @llvm.assume(i1 %3)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
   tail call void @llvm.assume(i1 %5)
   tail call void @llvm.assume(i1 %7)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_0, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_0, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_0, ptr nonnull @in1to2_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   tail call void @llvm.aie2.acquire(i32 48, i32 -1)
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
-  tail call void @llvm.memcpy.p0.p0.i20(ptr noundef nonnull align 4 dereferenceable(4096) @in1to2_buff_1, ptr noundef nonnull align 4 dereferenceable(4096) @in0to1_buff_1, i20 4096, i1 false)
+  tail call void @passthrough(ptr nonnull @in0to1_buff_1, ptr nonnull @in1to2_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 4, i32 1)
   tail call void @llvm.aie2.release(i32 49, i32 1)
   %epil.iter.next = add i64 %epil.iter, 1

@@ -40,6 +40,8 @@ declare void @llvm.aie2.release(i32, i32)
 
 declare void @vector_scalar_mul_aie_scalar(ptr, ptr, ptr, i32)
 
+declare void @passthrough(ptr, ptr, i32)
+
 define void @core_0_5() {
   br label %1
 
@@ -197,77 +199,47 @@ define void @core_0_4() {
 define void @core_0_3() {
   br label %1
 
-1:                                                ; preds = %35, %0
-  %2 = phi i64 [ %36, %35 ], [ 0, %0 ]
+1:                                                ; preds = %17, %0
+  %2 = phi i64 [ %18, %17 ], [ 0, %0 ]
   %3 = icmp slt i64 %2, 9223372036854775807
-  br i1 %3, label %4, label %37
+  br i1 %3, label %4, label %19
 
-4:                                                ; preds = %33, %1
-  %5 = phi i64 [ %34, %33 ], [ 0, %1 ]
+4:                                                ; preds = %7, %1
+  %5 = phi i64 [ %16, %7 ], [ 0, %1 ]
   %6 = icmp slt i64 %5, 4
-  br i1 %6, label %7, label %35
+  br i1 %6, label %7, label %17
 
 7:                                                ; preds = %4
   call void @llvm.aie2.acquire(i32 48, i32 -1)
   call void @llvm.aie2.acquire(i32 5, i32 -1)
-  br label %8
-
-8:                                                ; preds = %11, %7
-  %9 = phi i64 [ %19, %11 ], [ 0, %7 ]
-  %10 = icmp slt i64 %9, 1024
-  br i1 %10, label %11, label %20
-
-11:                                               ; preds = %8
-  %12 = and i64 ptrtoint (ptr @in0to1_buff_0 to i64), 31
-  %13 = icmp eq i64 %12, 0
-  call void @llvm.assume(i1 %13)
-  %14 = getelementptr i32, ptr @in0to1_buff_0, i64 %9
-  %15 = load i32, ptr %14, align 4
-  %16 = and i64 ptrtoint (ptr @in1to2_buff_0 to i64), 31
-  %17 = icmp eq i64 %16, 0
-  call void @llvm.assume(i1 %17)
-  %18 = getelementptr i32, ptr @in1to2_buff_0, i64 %9
-  store i32 %15, ptr %18, align 4
-  %19 = add i64 %9, 1
-  br label %8
-
-20:                                               ; preds = %8
+  %8 = and i64 ptrtoint (ptr @in1to2_buff_0 to i64), 31
+  %9 = icmp eq i64 %8, 0
+  call void @llvm.assume(i1 %9)
+  %10 = and i64 ptrtoint (ptr @in0to1_buff_0 to i64), 31
+  %11 = icmp eq i64 %10, 0
+  call void @llvm.assume(i1 %11)
+  call void @passthrough(ptr @in0to1_buff_0, ptr @in1to2_buff_0, i32 1024)
   call void @llvm.aie2.release(i32 4, i32 1)
   call void @llvm.aie2.release(i32 49, i32 1)
   call void @llvm.aie2.acquire(i32 48, i32 -1)
   call void @llvm.aie2.acquire(i32 5, i32 -1)
-  br label %21
-
-21:                                               ; preds = %24, %20
-  %22 = phi i64 [ %32, %24 ], [ 0, %20 ]
-  %23 = icmp slt i64 %22, 1024
-  br i1 %23, label %24, label %33
-
-24:                                               ; preds = %21
-  %25 = and i64 ptrtoint (ptr @in0to1_buff_1 to i64), 31
-  %26 = icmp eq i64 %25, 0
-  call void @llvm.assume(i1 %26)
-  %27 = getelementptr i32, ptr @in0to1_buff_1, i64 %22
-  %28 = load i32, ptr %27, align 4
-  %29 = and i64 ptrtoint (ptr @in1to2_buff_1 to i64), 31
-  %30 = icmp eq i64 %29, 0
-  call void @llvm.assume(i1 %30)
-  %31 = getelementptr i32, ptr @in1to2_buff_1, i64 %22
-  store i32 %28, ptr %31, align 4
-  %32 = add i64 %22, 1
-  br label %21
-
-33:                                               ; preds = %21
+  %12 = and i64 ptrtoint (ptr @in1to2_buff_1 to i64), 31
+  %13 = icmp eq i64 %12, 0
+  call void @llvm.assume(i1 %13)
+  %14 = and i64 ptrtoint (ptr @in0to1_buff_1 to i64), 31
+  %15 = icmp eq i64 %14, 0
+  call void @llvm.assume(i1 %15)
+  call void @passthrough(ptr @in0to1_buff_1, ptr @in1to2_buff_1, i32 1024)
   call void @llvm.aie2.release(i32 4, i32 1)
   call void @llvm.aie2.release(i32 49, i32 1)
-  %34 = add i64 %5, 2
+  %16 = add i64 %5, 2
   br label %4
 
-35:                                               ; preds = %4
-  %36 = add i64 %2, 1
+17:                                               ; preds = %4
+  %18 = add i64 %2, 1
   br label %1
 
-37:                                               ; preds = %1
+19:                                               ; preds = %1
   ret void
 }
 

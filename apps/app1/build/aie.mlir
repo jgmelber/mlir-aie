@@ -1,6 +1,7 @@
 module {
   aie.device(npu1_4col) {
     func.func private @vector_scalar_mul_aie_scalar(memref<1024xi32>, memref<1024xi32>, memref<1xi32>, i32)
+    func.func private @passthrough(memref<1024xi32>, memref<1024xi32>, i32)
     %tile_0_0 = aie.tile(0, 0)
     %tile_0_2 = aie.tile(0, 2)
     %tile_0_3 = aie.tile(0, 3)
@@ -64,19 +65,14 @@ module {
           %1 = aie.objectfifo.subview.access %0[0] : !aie.objectfifosubview<memref<1024xi32>> -> memref<1024xi32>
           %2 = aie.objectfifo.acquire @in0to1(Consume, 1) : !aie.objectfifosubview<memref<1024xi32>>
           %3 = aie.objectfifo.subview.access %2[0] : !aie.objectfifosubview<memref<1024xi32>> -> memref<1024xi32>
-          %c0_2 = arith.constant 0 : index
-          %c1024 = arith.constant 1024 : index
-          %c1_3 = arith.constant 1 : index
-          scf.for %arg2 = %c0_2 to %c1024 step %c1_3 {
-            %4 = memref.load %3[%arg2] : memref<1024xi32>
-            memref.store %4, %1[%arg2] : memref<1024xi32>
-          }
+          %c1024_i32 = arith.constant 1024 : i32
+          func.call @passthrough(%3, %1, %c1024_i32) : (memref<1024xi32>, memref<1024xi32>, i32) -> ()
           aie.objectfifo.release @in0to1(Consume, 1)
           aie.objectfifo.release @in1to2(Produce, 1)
         }
       }
       aie.end
-    }
+    } {link_with = "passthrough.o"}
     %core_0_4 = aie.core(%tile_0_4) {
       %c0 = arith.constant 0 : index
       %c9223372036854775807 = arith.constant 9223372036854775807 : index

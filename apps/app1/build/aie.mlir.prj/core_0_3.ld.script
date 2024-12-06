@@ -75,4 +75,5 @@ in1to2_buff_1 = .;
 . += 0x1000;
   .bss : { *(.bss*) } > data
 }
+INPUT(passthrough.o)
 PROVIDE(main = core_0_3);

@@ -26,8 +26,12 @@ def my_vector_scalar():
 
         # AIE Core Function declarations
         scale_scalar = external_func(
-            "vector_scalar_mul_aie_scalar",
+            "vector_scalar_mul_aie_scalar", # Name of the function inside the file compiled in the makefile
             inputs=[tile_ty, tile_ty, scalar_ty, np.int32],
+        )
+        passthrough = external_func(
+            "passthrough",
+            inputs=[tile_ty, tile_ty, np.int32],
         )
 
         # Tile declarations
@@ -76,7 +80,7 @@ def my_vector_scalar():
                 of_factor.release(ObjectFifoPort.Consume, 1)
         # Compute tile 3
         # Just making a passthrough tiles for now
-        @core(ct[0][1])
+        @core(ct[0][1], "passthrough.o")
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
@@ -84,8 +88,7 @@ def my_vector_scalar():
                 for _ in range_(ITER):
                     elem_out = of_1to2.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_0to1.acquire(ObjectFifoPort.Consume, 1)
-                    for i in range_(TSIZE):
-                        elem_out[i] = elem_in[i]
+                    passthrough(elem_in, elem_out, TSIZE)
                     of_0to1.release(ObjectFifoPort.Consume, 1)
                     of_1to2.release(ObjectFifoPort.Produce, 1)
         @core(ct[0][2])
