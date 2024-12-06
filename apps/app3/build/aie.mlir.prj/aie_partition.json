@@ -5,14 +5,17 @@
     "inference_fingerprint": "23423",
     "pre_post_fingerprint": "12345",
     "partition": {
-      "column_width": 4,
+      "column_width": 1,
       "start_columns": [
-        1
+        1,
+        2,
+        3,
+        4
       ]
     },
     "PDIs": [
       {
-        "uuid": "3d53eed4-03c9-4af1-9a1c-6941646e1137",
+        "uuid": "6ad33695-cc6a-4772-a43d-46e25e017dfc",
         "file_name": "./design.pdi",
         "cdo_groups": [
           {
