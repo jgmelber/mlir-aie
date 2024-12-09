@@ -26,7 +26,15 @@ build/passthrough.o: ${srcdir}/kernels/passthrough.cc
 	mkdir -p ${@D}
 	cd ${@D} && ${PEANO_INSTALL_DIR}/bin/clang++ ${PEANOWRAP2_FLAGS} -c $< -o ${@F}
 
-build/final.xclbin: build/aie.mlir build/scale.o build/passthrough.o
+build/vector_add.o: ${srcdir}/kernels/vector_add.cc
+	mkdir -p ${@D}
+	cd ${@D} && ${PEANO_INSTALL_DIR}/bin/clang++ ${PEANOWRAP2_FLAGS} -c $< -o ${@F}
+
+build/mean.o: ${srcdir}/kernels/mean.cc
+	mkdir -p ${@D}
+	cd ${@D} && ${PEANO_INSTALL_DIR}/bin/clang++ ${PEANOWRAP2_FLAGS} -c $< -o ${@F}
+
+build/final.xclbin: build/aie.mlir build/scale.o build/passthrough.o build/vector_add.o build/mean.o
 	mkdir -p ${@D}
 	cd ${@D} && aiecc.py --aie-generate-cdo --no-compile-host --xclbin-name=${@F} \
 				--no-xchesscc --no-xbridge \
@@ -53,7 +61,7 @@ run-10-warmup: ${targetname}.exe build/final.xclbin build/insts.txt
 	${powershell} ./$< -x build/final.xclbin -i build/insts.txt -k MLIR_AIE --iters 10 --warmup 4
 
 run_py: build/final.xclbin
-	${powershell} python3 ${srcdir}/test.py -x build/final.xclbin -i build/insts.txt -k MLIR_AIE
+	${powershell} python3 ${srcdir}/test.py -x build/final.xclbin -i build/insts.txt -k MLIR_AIE --iters 10 --warmup 4
 
 clean:
 	rm -rf build _build ${targetname}.exe

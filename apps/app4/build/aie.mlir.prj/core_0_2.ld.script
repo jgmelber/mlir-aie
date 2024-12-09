@@ -65,10 +65,10 @@ infactor_cons_buff_0 = .;
 infactor_cons_buff_1 = .;
 . += 0x4;
 . = 0x72400;
-in_cons_buff_0 = .;
+in0_cons_buff_0 = .;
 . += 0x1000;
 . = 0x74000;
-in_cons_buff_1 = .;
+in0_cons_buff_1 = .;
 . += 0x1000;
   .bss : { *(.bss*) } > data
 }

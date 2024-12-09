@@ -15,9 +15,11 @@ from aie.extras.context import mlir_mod_ctx
 
 
 def my_vector_scalar():
-    MSIZE = 4096
+    MSIZE = 9216 # 96x96
+    BSIZE = 65535 # 256X256
     TSIZE = 1024
-    ITER = 4
+    ITER_M = 9
+    ITER_B = 64
     @device(AIEDevice.npu1_4col)
     def device_body():
         tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.int32]]
@@ -32,6 +34,14 @@ def my_vector_scalar():
         passthrough = external_func(
             "passthrough",
             inputs=[tile_ty, tile_ty, np.int32],
+        )
+        add_scalar = external_func(
+            "vector_add_aie_scalar",
+            inputs=[tile_ty, tile_ty, tile_ty, np.int32],
+        )
+        mean = external_func(
+            "mean",
+            inputs=[tile_ty, scalar_ty, np.int32],
         )
 
         # Tile declarations
@@ -50,9 +60,12 @@ def my_vector_scalar():
             ct.append(c)
 
         # AIE-array data movement with object fifos
-        # Inputs from shim 00 to cmptile 00
-        of_in = object_fifo("in", st[0], ct[0][0], 2, tile_ty)
+        # Inputs
+        # Column 0
+        of_in0 = object_fifo("in0", st[0], ct[0][0], 2, tile_ty)
         of_factor = object_fifo("infactor", st[0], ct[0][0], 2, scalar_ty)
+        # Column 1
+        of_in1 = object_fifo("in1", st[1], ct[1][0], 2, tile_ty)
         
         # Internal movements
         # Column 0
@@ -71,11 +84,11 @@ def my_vector_scalar():
             for _ in range_(sys.maxsize):
                 elem_factor = of_factor.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
                 # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
+                for _ in range_(ITER_M):
                     elem_out = of_0to1.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_in.acquire(ObjectFifoPort.Consume, 1)
+                    elem_in = of_in0.acquire(ObjectFifoPort.Consume, 1)
                     scale_scalar(elem_in, elem_out, elem_factor, TSIZE)
-                    of_in.release(ObjectFifoPort.Consume, 1)
+                    of_in0.release(ObjectFifoPort.Consume, 1)
                     of_0to1.release(ObjectFifoPort.Produce, 1)
                 of_factor.release(ObjectFifoPort.Consume, 1)
         # Compute tile 3
@@ -85,7 +98,7 @@ def my_vector_scalar():
             # Effective while(1)
             for _ in range_(sys.maxsize):
                 # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
+                for _ in range_(ITER_M):
                     elem_out = of_1to2.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_0to1.acquire(ObjectFifoPort.Consume, 1)
                     passthrough(elem_in, elem_out, TSIZE)
@@ -96,7 +109,7 @@ def my_vector_scalar():
             # Effective while(1)
             for _ in range_(sys.maxsize):
                 # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
+                for _ in range_(ITER_M):
                     elem_out = of_2to3.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_1to2.acquire(ObjectFifoPort.Consume, 1)
                     for i in range_(TSIZE):
@@ -108,7 +121,7 @@ def my_vector_scalar():
             # Effective while(1)
             for _ in range_(sys.maxsize):
                 # Number of sub-vector "tile" iterations
-                for _ in range_(ITER):
+                for _ in range_(ITER_M):
                     elem_out = of_out.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_2to3.acquire(ObjectFifoPort.Consume, 1)
                     for i in range_(TSIZE):
@@ -119,7 +132,7 @@ def my_vector_scalar():
         # To/from AIE-array data movement
         @runtime_sequence(tensor_ty, scalar_ty, tensor_ty)
         def sequence(A, F, C):
-            npu_dma_memcpy_nd(metadata=of_in, bd_id=1, mem=A, sizes=[1, 1, 1, MSIZE])
+            npu_dma_memcpy_nd(metadata=of_in0, bd_id=1, mem=A, sizes=[1, 1, 1, MSIZE])
             npu_dma_memcpy_nd(metadata=of_factor, bd_id=2, mem=F, sizes=[1, 1, 1, 1])
             npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=C, sizes=[1, 1, 1, MSIZE])
             # We know of_out will complete after of_in and of_factor, so it is sufficient to just wait for of_out

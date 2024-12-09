@@ -25,10 +25,11 @@ def main(opts):
     # ------------------------------------------------------------
     # Configure this to match your design's buffer size and type
     # ------------------------------------------------------------
-    MSIZE = 4096
+    MSIZE = 9216 # 96x96
+    BSIZE = 65535 # 256X256
     INOUT0_VOLUME = int(MSIZE)  # Input only, 64x uint32_t in this example
     INOUT1_VOLUME = int(1)  # Input only, 1 uint32_t scale factor
-    INOUT2_VOLUME = int(MSIZE)  # Output only, 64x uint32_t in this example
+    INOUT2_VOLUME = int(BSIZE)  # Output only, 64x uint32_t in this example
 
     INOUT0_DATATYPE = np.int32
     INOUT1_DATATYPE = np.int32
@@ -38,7 +39,7 @@ def main(opts):
     INOUT1_SIZE = INOUT1_VOLUME * INOUT1_DATATYPE().itemsize
     INOUT2_SIZE = INOUT2_VOLUME * INOUT2_DATATYPE().itemsize
 
-    OUT_SIZE = INOUT2_SIZE
+    OUT_SIZE = INOUT0_SIZE
 
     # ------------------------------------------------------
     # Get device, load the xclbin & kernel and register them
@@ -52,6 +53,7 @@ def main(opts):
     bo_inout0 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(3))
     bo_inout1 = xrt.bo(device, INOUT1_SIZE, xrt.bo.host_only, kernel.group_id(4))
     bo_inout2 = xrt.bo(device, OUT_SIZE, xrt.bo.host_only, kernel.group_id(5))
+    bo_inout3 = xrt.bo(device, INOUT2_SIZE, xrt.bo.host_only, kernel.group_id(6))
 
     # Initialize instruction buffer
     bo_instr.write(instr_v, 0)
@@ -106,8 +108,6 @@ def main(opts):
             ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * scale_factor
             e = np.equal(output_buffer, ref)
             errors = errors + np.size(e) - np.count_nonzero(e)
-        for i in range(10):
-            print(output_buffer[i])
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)
