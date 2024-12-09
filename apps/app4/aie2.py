@@ -14,11 +14,11 @@ from aie.helpers.dialects.ext.scf import _for as range_
 from aie.extras.context import mlir_mod_ctx
 
 
-def my_vector_scalar():
+def loafty():
     MSIZE = 9216 # 96x96
     BSIZE = 65535 # 256X256
     TSIZE = 1024
-    ITER_M = 9
+    ITER_M = 10
     ITER_B = 64
     @device(AIEDevice.npu1_4col)
     def device_body():
@@ -140,7 +140,7 @@ def my_vector_scalar():
 
 
 with mlir_mod_ctx() as ctx:
-    my_vector_scalar()
+    loafty()
     res = ctx.module.operation.verify()
     if res == True:
         print(ctx.module)
