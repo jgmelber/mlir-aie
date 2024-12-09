@@ -13,10 +13,57 @@ from aie.dialects.aiex import *
 from aie.helpers.dialects.ext.scf import _for as range_
 from aie.extras.context import mlir_mod_ctx
 
+def declaring_tiles(n_cols, n_comp):
+    st = [] # Shim Tiles
+    mt = [] # Memory Tiles (currently not used)
+    ct = [] # Compute Tiles
+    for i in range(n_cols):
+        # Making the shim tiles
+        st.append(tile(i, 0))
+        mt.append(tile(i, 1))
+        # Making compute tiles
+        c = []
+        for j in range(n_comp):
+            c.append(tile(i, j+2))
+        ct.append(c)
+    return (st, mt, ct)
+
+def declaring_kernel_func(tile_ty, scalar_ty):
+    # kernel for vector x scalar
+    name0 = "scale_scalar"
+    kernel0 = external_func(
+        "vector_scalar_mul_aie_scalar", # Name of the function inside the file compiled in the makefile
+        inputs=[tile_ty, tile_ty, scalar_ty, np.int32],
+    )
+    # kernel for passthrough (scalar)
+    name1 = "passthrough"
+    kernel1 = external_func(
+        "passthrough",
+        inputs=[tile_ty, tile_ty, np.int32],
+    )
+    # kenrel for adding two vectors (scalar)
+    name2 = "add_scalar"
+    kernel2 = external_func(
+        "vector_add_aie_scalar",
+        inputs=[tile_ty, tile_ty, tile_ty, np.int32],
+    )
+    # kernel for mean of a vector (scalar)
+    name3 = "mean"
+    kernel3 = external_func(
+        "mean",
+        inputs=[tile_ty, scalar_ty, np.int32],
+    )
+    return {
+        name0: kernel0,
+        name1: kernel1,
+        name2: kernel2,
+        name3: kernel3,
+    }
+
 
 def loafty():
     MSIZE = 9216 # 96x96
-    BSIZE = 65535 # 256X256
+    BSIZE = 9216 # 256X256
     TSIZE = 1024
     ITER_M = 10
     ITER_B = 64
@@ -27,37 +74,10 @@ def loafty():
         scalar_ty = np.ndarray[(1,), np.dtype[np.int32]]
 
         # AIE Core Function declarations
-        scale_scalar = external_func(
-            "vector_scalar_mul_aie_scalar", # Name of the function inside the file compiled in the makefile
-            inputs=[tile_ty, tile_ty, scalar_ty, np.int32],
-        )
-        passthrough = external_func(
-            "passthrough",
-            inputs=[tile_ty, tile_ty, np.int32],
-        )
-        add_scalar = external_func(
-            "vector_add_aie_scalar",
-            inputs=[tile_ty, tile_ty, tile_ty, np.int32],
-        )
-        mean = external_func(
-            "mean",
-            inputs=[tile_ty, scalar_ty, np.int32],
-        )
+        kernels = declaring_kernel_func(tile_ty, scalar_ty)
 
         # Tile declarations
-        n_cols = 4
-        n_comp = 4
-        st = [] # Shim Tiles
-        mt = [] # Memory Tiles (currently not used)
-        ct = [] # Compute Tiles
-        for i in range(n_cols):
-            # Making the shim tiles
-            st.append(tile(i, 0))
-            # Making compute tiles
-            c = []
-            for j in range(n_comp):
-                c.append(tile(i, j+2))
-            ct.append(c)
+        st, mt, ct = declaring_tiles(4, 4)
 
         # AIE-array data movement with object fifos
         # Inputs
@@ -87,7 +107,7 @@ def loafty():
                 for _ in range_(ITER_M):
                     elem_out = of_0to1.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_in0.acquire(ObjectFifoPort.Consume, 1)
-                    scale_scalar(elem_in, elem_out, elem_factor, TSIZE)
+                    kernels['scale_scalar'](elem_in, elem_out, elem_factor, TSIZE)
                     of_in0.release(ObjectFifoPort.Consume, 1)
                     of_0to1.release(ObjectFifoPort.Produce, 1)
                 of_factor.release(ObjectFifoPort.Consume, 1)
@@ -101,7 +121,7 @@ def loafty():
                 for _ in range_(ITER_M):
                     elem_out = of_1to2.acquire(ObjectFifoPort.Produce, 1)
                     elem_in = of_0to1.acquire(ObjectFifoPort.Consume, 1)
-                    passthrough(elem_in, elem_out, TSIZE)
+                    kernels['passthrough'](elem_in, elem_out, TSIZE)
                     of_0to1.release(ObjectFifoPort.Consume, 1)
                     of_1to2.release(ObjectFifoPort.Produce, 1)
         @core(ct[0][2])

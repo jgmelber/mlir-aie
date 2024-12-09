@@ -16,11 +16,13 @@ module {
     func.func private @vector_add_aie_scalar(memref<1024xi32>, memref<1024xi32>, memref<1024xi32>, i32)
     func.func private @mean(memref<1024xi32>, memref<1xi32>, i32)
     %tile_0_0 = aie.tile(0, 0) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 15>}
+    %tile_0_1 = aie.tile(0, 1) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 26>}
     %tile_0_2 = aie.tile(0, 2) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 27>}
     %tile_0_3 = aie.tile(0, 3) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 29>}
     %tile_0_4 = aie.tile(0, 4) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 30>}
     %tile_0_5 = aie.tile(0, 5) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 31>}
     %tile_1_0 = aie.tile(1, 0) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 15>}
+    %tile_1_1 = aie.tile(1, 1) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 26>}
     %tile_1_2 = aie.tile(1, 2) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 27>}
     %tile_1_3 = aie.tile(1, 3) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 29>}
     %switchbox_1_3 = aie.switchbox(%tile_1_3) {
@@ -38,6 +40,9 @@ module {
       aie.packet_rules(Ctrl : 0) {
         aie.rule(31, 15, %0)
       }
+    }
+    %tile_2_1 = aie.tile(2, 1) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 26>}
+    %switchbox_2_1 = aie.switchbox(%tile_2_1) {
     }
     %tile_2_2 = aie.tile(2, 2) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 27>}
     %switchbox_2_2 = aie.switchbox(%tile_2_2) {
@@ -58,6 +63,9 @@ module {
       aie.packet_rules(Ctrl : 0) {
         aie.rule(31, 15, %0)
       }
+    }
+    %tile_3_1 = aie.tile(3, 1) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 26>}
+    %switchbox_3_1 = aie.switchbox(%tile_3_1) {
     }
     %tile_3_2 = aie.tile(3, 2) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 27>}
     %switchbox_3_2 = aie.switchbox(%tile_3_2) {
@@ -122,7 +130,6 @@ module {
       aie.connect<DMA : 1, North : 7>
       aie.connect<North : 2, DMA : 0>
     }
-    %tile_0_1 = aie.tile(0, 1)
     %switchbox_0_1 = aie.switchbox(%tile_0_1) {
       aie.connect<South : 1, North : 1>
       aie.connect<South : 2, North : 2>
@@ -144,7 +151,6 @@ module {
     %shim_mux_1_0 = aie.shim_mux(%tile_1_0) {
       aie.connect<DMA : 0, North : 3>
     }
-    %tile_1_1 = aie.tile(1, 1)
     %switchbox_1_1 = aie.switchbox(%tile_1_1) {
       aie.connect<South : 1, North : 1>
     }
@@ -536,9 +542,14 @@ module {
     aie.wire(%tile_1_5 : DMA, %switchbox_1_5 : DMA)
     aie.wire(%switchbox_1_4 : North, %switchbox_1_5 : South)
     aie.wire(%switchbox_1_0 : East, %switchbox_2_0 : West)
+    aie.wire(%switchbox_1_1 : East, %switchbox_2_1 : West)
+    aie.wire(%tile_2_1 : Core, %switchbox_2_1 : Core)
+    aie.wire(%tile_2_1 : DMA, %switchbox_2_1 : DMA)
+    aie.wire(%switchbox_2_0 : North, %switchbox_2_1 : South)
     aie.wire(%switchbox_1_2 : East, %switchbox_2_2 : West)
     aie.wire(%tile_2_2 : Core, %switchbox_2_2 : Core)
     aie.wire(%tile_2_2 : DMA, %switchbox_2_2 : DMA)
+    aie.wire(%switchbox_2_1 : North, %switchbox_2_2 : South)
     aie.wire(%switchbox_1_3 : East, %switchbox_2_3 : West)
     aie.wire(%tile_2_3 : Core, %switchbox_2_3 : Core)
     aie.wire(%tile_2_3 : DMA, %switchbox_2_3 : DMA)
@@ -552,9 +563,14 @@ module {
     aie.wire(%tile_2_5 : DMA, %switchbox_2_5 : DMA)
     aie.wire(%switchbox_2_4 : North, %switchbox_2_5 : South)
     aie.wire(%switchbox_2_0 : East, %switchbox_3_0 : West)
+    aie.wire(%switchbox_2_1 : East, %switchbox_3_1 : West)
+    aie.wire(%tile_3_1 : Core, %switchbox_3_1 : Core)
+    aie.wire(%tile_3_1 : DMA, %switchbox_3_1 : DMA)
+    aie.wire(%switchbox_3_0 : North, %switchbox_3_1 : South)
     aie.wire(%switchbox_2_2 : East, %switchbox_3_2 : West)
     aie.wire(%tile_3_2 : Core, %switchbox_3_2 : Core)
     aie.wire(%tile_3_2 : DMA, %switchbox_3_2 : DMA)
+    aie.wire(%switchbox_3_1 : North, %switchbox_3_2 : South)
     aie.wire(%switchbox_2_3 : East, %switchbox_3_3 : West)
     aie.wire(%tile_3_3 : Core, %switchbox_3_3 : Core)
     aie.wire(%tile_3_3 : DMA, %switchbox_3_3 : DMA)
