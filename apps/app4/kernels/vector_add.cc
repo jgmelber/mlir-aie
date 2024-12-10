@@ -15,7 +15,7 @@
 
 extern "C" {
 
-void vector_add_aie_scalar(int32_t *a, int32_t *c, int32_t *b,
+void vector_add_aie_scalar(float *a, float *c, float *b,
                                   int32_t N) {
   for (int i = 0; i < N; i++) {
     c[i] = a[i] + b[i];

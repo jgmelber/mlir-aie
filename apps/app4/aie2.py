@@ -31,26 +31,22 @@ def declaring_tiles(n_cols, n_comp):
 def declaring_kernel_func(tile_ty, scalar_ty):
     # kernel for vector x scalar
     name0 = "scale_scalar"
-    kernel0 = external_func(
-        "vector_scalar_mul_aie_scalar", # Name of the function inside the file compiled in the makefile
+    kernel0 = external_func("vector_scalar_mul_aie_scalar", # Name of the function inside the file compiled in the makefile
         inputs=[tile_ty, tile_ty, scalar_ty, np.int32],
     )
     # kernel for passthrough (scalar)
     name1 = "passthrough"
-    kernel1 = external_func(
-        "passthrough",
+    kernel1 = external_func("passthrough",
         inputs=[tile_ty, tile_ty, np.int32],
     )
     # kenrel for adding two vectors (scalar)
     name2 = "add_scalar"
-    kernel2 = external_func(
-        "vector_add_aie_scalar",
+    kernel2 = external_func("vector_add_aie_scalar",
         inputs=[tile_ty, tile_ty, tile_ty, np.int32],
     )
     # kernel for mean of a vector (scalar)
     name3 = "mean"
-    kernel3 = external_func(
-        "mean",
+    kernel3 = external_func("mean",
         inputs=[tile_ty, scalar_ty, np.int32],
     )
     return {
@@ -65,13 +61,13 @@ def loafty():
     MSIZE = 9216 # 96x96
     BSIZE = 9216 # 256X256
     TSIZE = 1024
-    ITER_M = 9
+    ITER_M = 10
     ITER_B = 9
     @device(AIEDevice.npu1_4col)
     def device_body():
-        tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.int32]]
-        tile_ty = np.ndarray[(TSIZE,), np.dtype[np.int32]]
-        scalar_ty = np.ndarray[(1,), np.dtype[np.int32]]
+        tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.float32]]
+        tile_ty = np.ndarray[(TSIZE,), np.dtype[np.float32]]
+        scalar_ty = np.ndarray[(1,), np.dtype[np.float32]]
 
         # AIE Core Function declarations
         kernels = declaring_kernel_func(tile_ty, scalar_ty)

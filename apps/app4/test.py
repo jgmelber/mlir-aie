@@ -31,9 +31,9 @@ def main(opts):
     INOUT1_VOLUME = int(1)  # Input only, 1 uint32_t scale factor
     INOUT2_VOLUME = int(BSIZE)  # Output only, 64x uint32_t in this example
 
-    INOUT0_DATATYPE = np.int32
-    INOUT1_DATATYPE = np.int32
-    INOUT2_DATATYPE = np.int32
+    INOUT0_DATATYPE = np.float32
+    INOUT1_DATATYPE = np.float32
+    INOUT2_DATATYPE = np.float32
 
     INOUT0_SIZE = INOUT0_VOLUME * INOUT0_DATATYPE().itemsize
     INOUT1_SIZE = INOUT1_VOLUME * INOUT1_DATATYPE().itemsize
@@ -132,6 +132,8 @@ def main(opts):
             ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * inout0
             e = np.equal(output_buffer, ref)
             errors = errors + np.size(e) - np.count_nonzero(e)
+        for j in output_buffer[:8192:]:
+            print(j)
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)
