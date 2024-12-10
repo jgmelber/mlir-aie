@@ -65,8 +65,8 @@ def loafty():
     MSIZE = 9216 # 96x96
     BSIZE = 9216 # 256X256
     TSIZE = 1024
-    ITER_M = 10
-    ITER_B = 64
+    ITER_M = 9
+    ITER_B = 9
     @device(AIEDevice.npu1_4col)
     def device_body():
         tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.int32]]
@@ -82,17 +82,17 @@ def loafty():
         # AIE-array data movement with object fifos
         # Inputs
         # Column 0
-        of_in0 = object_fifo("in0", st[0], ct[0][0], 2, scalar_ty)
-        of_in1 = object_fifo("in1", st[0], ct[0][0], 2, tile_ty)
+        of_in0 = object_fifo("in0", st[0], ct[0][0], 2, scalar_ty) # input: factor (2 * pi * f / SL)
+        of_in1 = object_fifo("in1", st[0], ct[0][0], 2, tile_ty) # input: visibilities
         # Column 1
-        of_in2 = object_fifo("in2", st[1], ct[1][0], 2, tile_ty)
-        of_in3 = object_fifo("in3", st[1], ct[1][0], 2, scalar_ty)
+        of_in2 = object_fifo("in2", st[1], ct[1][0], 2, tile_ty) # input: u (baselines)
+        of_in3 = object_fifo("in3", st[1], ct[1][0], 2, scalar_ty) # input: l (baseline scale)
         # Column 2
-        of_in4 = object_fifo("in4", st[2], ct[2][0], 2, tile_ty)
-        of_in5 = object_fifo("in5", st[2], ct[2][0], 2, scalar_ty)
+        of_in4 = object_fifo("in4", st[2], ct[2][0], 2, tile_ty) # input: v (baselines)
+        of_in5 = object_fifo("in5", st[2], ct[2][0], 2, scalar_ty) # input: m (baseline scale)
         # Column 3
-        of_in6 = object_fifo("in6", st[3], ct[3][0], 2, tile_ty)
-        of_in7 = object_fifo("in7", st[3], ct[3][0], 2, scalar_ty)
+        of_in6 = object_fifo("in6", st[3], ct[3][0], 2, tile_ty) # input: w (baselines)
+        of_in7 = object_fifo("in7", st[3], ct[3][0], 2, scalar_ty) # input: n (baseline scale)
         
         # Internal movements
         # Column 0

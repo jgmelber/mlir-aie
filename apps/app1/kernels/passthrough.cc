@@ -15,7 +15,7 @@
 
 extern "C" {
 
-void passthrough(int32_t *a, int32_t *c, int32_t N) {
+void passthrough(float *a, float *c, int32_t N) {
   for (int i = 0; i < N; i++) {
     c[i] = a[i];
   }

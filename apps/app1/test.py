@@ -30,9 +30,9 @@ def main(opts):
     INOUT1_VOLUME = int(1)  # Input only, 1 uint32_t scale factor
     INOUT2_VOLUME = int(MSIZE)  # Output only, 64x uint32_t in this example
 
-    INOUT0_DATATYPE = np.int32
-    INOUT1_DATATYPE = np.int32
-    INOUT2_DATATYPE = np.int32
+    INOUT0_DATATYPE = np.float32
+    INOUT1_DATATYPE = np.float32
+    INOUT2_DATATYPE = np.float32
 
     INOUT0_SIZE = INOUT0_VOLUME * INOUT0_DATATYPE().itemsize
     INOUT1_SIZE = INOUT1_VOLUME * INOUT1_DATATYPE().itemsize
@@ -50,18 +50,18 @@ def main(opts):
     # ------------------------------------------------------
     bo_instr = xrt.bo(device, len(instr_v) * 4, xrt.bo.cacheable, kernel.group_id(1))
     bo_inout0 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(3))
-    bo_inout1 = xrt.bo(device, INOUT1_SIZE, xrt.bo.host_only, kernel.group_id(4))
-    bo_inout2 = xrt.bo(device, OUT_SIZE, xrt.bo.host_only, kernel.group_id(5))
+    bo_inout1 = xrt.bo(device, OUT_SIZE, xrt.bo.host_only, kernel.group_id(4))
+    bo_inout2 = xrt.bo(device, INOUT1_SIZE, xrt.bo.host_only, kernel.group_id(5))
 
     # Initialize instruction buffer
     bo_instr.write(instr_v, 0)
 
     # Initialize data buffers
     inout0 = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE)
-    scale_factor = np.array([3], dtype=INOUT1_DATATYPE)
-    inout2 = np.zeros(OUT_SIZE, dtype=np.uint8)
+    inout1 = np.zeros(OUT_SIZE, dtype=np.uint8)
+    inout2 = np.array([3], dtype=INOUT1_DATATYPE)
     bo_inout0.write(inout0, 0)
-    bo_inout1.write(scale_factor, 0)
+    bo_inout1.write(inout1, 0)
     bo_inout2.write(inout2, 0)
 
     # Sync buffers to update input buffer values
@@ -88,22 +88,22 @@ def main(opts):
             print("Running Kernel.")
         start = time.time_ns()
         opcode = 3
-        h = kernel(opcode, bo_instr, len(instr_v), bo_inout0, bo_inout1, bo_inout2)
+        h = kernel(opcode, bo_instr, len(instr_v), bo_inout0, bo_inout2, bo_inout1)
         h.wait()
         stop = time.time_ns()
-        bo_inout2.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_FROM_DEVICE)
+        bo_inout1.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_FROM_DEVICE)
 
         # Warmup iterations do not count towards average runtime.
         if i < opts.warmup_iters:
             continue
 
         # Copy output results and verify they are correct
-        entire_buffer = bo_inout2.read(OUT_SIZE, 0).view(np.uint32)
+        entire_buffer = bo_inout1.read(OUT_SIZE, 0).view(np.float32)
         output_buffer = entire_buffer[:INOUT2_VOLUME]
         if opts.verify:
             if opts.verbosity >= 1:
                 print("Verifying results ...")
-            ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * scale_factor
+            ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * inout2
             e = np.equal(output_buffer, ref)
             errors = errors + np.size(e) - np.count_nonzero(e)
         for i in range(10):

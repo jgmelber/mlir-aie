@@ -129,9 +129,9 @@ def main(opts):
         if opts.verify:
             if opts.verbosity >= 1:
                 print("Verifying results ...")
-            # ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * inout0
-            # e = np.equal(output_buffer, ref)
-            # errors = errors + np.size(e) - np.count_nonzero(e)
+            ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * inout0
+            e = np.equal(output_buffer, ref)
+            errors = errors + np.size(e) - np.count_nonzero(e)
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)
