@@ -82,19 +82,26 @@ def loafty():
         # AIE-array data movement with object fifos
         # Inputs
         # Column 0
-        of_in0 = object_fifo("in0", st[0], ct[0][0], 2, tile_ty)
-        of_factor = object_fifo("infactor", st[0], ct[0][0], 2, scalar_ty)
+        of_in0 = object_fifo("in0", st[0], ct[0][0], 2, scalar_ty)
+        of_in1 = object_fifo("in1", st[0], ct[0][0], 2, tile_ty)
         # Column 1
-        of_in1 = object_fifo("in1", st[1], ct[1][0], 2, tile_ty)
+        of_in2 = object_fifo("in2", st[1], ct[1][0], 2, tile_ty)
+        of_in3 = object_fifo("in3", st[1], ct[1][0], 2, scalar_ty)
+        # Column 2
+        of_in4 = object_fifo("in4", st[2], ct[2][0], 2, tile_ty)
+        of_in5 = object_fifo("in5", st[2], ct[2][0], 2, scalar_ty)
+        # Column 3
+        of_in6 = object_fifo("in6", st[3], ct[3][0], 2, tile_ty)
+        of_in7 = object_fifo("in7", st[3], ct[3][0], 2, scalar_ty)
         
         # Internal movements
         # Column 0
         of_0to1 = object_fifo("in0to1", ct[0][0], ct[0][1], 2, tile_ty)
         of_1to2 = object_fifo("in1to2", ct[0][1], ct[0][2], 2, tile_ty)
-        of_2to3 = object_fifo("in2to3", ct[0][2], ct[0][3], 2, tile_ty)
+        of_2to3 = object_fifo("in2to3", ct[0][2], ct[3][3], 2, tile_ty)
         
         # Output
-        of_out = object_fifo("out", ct[0][3], st[0], 2, tile_ty)
+        of_out = object_fifo("out", ct[3][3], st[3], 2, tile_ty)
 
         # Set up compute tiles
         # Compute tile 2
@@ -102,15 +109,15 @@ def loafty():
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
-                elem_factor = of_factor.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
+                elem_factor = of_in0.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
                 # Number of sub-vector "tile" iterations
                 for _ in range_(ITER_M):
                     elem_out = of_0to1.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_in0.acquire(ObjectFifoPort.Consume, 1)
+                    elem_in = of_in1.acquire(ObjectFifoPort.Consume, 1)
                     kernels['scale_scalar'](elem_in, elem_out, elem_factor, TSIZE)
-                    of_in0.release(ObjectFifoPort.Consume, 1)
+                    of_in1.release(ObjectFifoPort.Consume, 1)
                     of_0to1.release(ObjectFifoPort.Produce, 1)
-                of_factor.release(ObjectFifoPort.Consume, 1)
+                of_in0.release(ObjectFifoPort.Consume, 1)
         # Compute tile 3
         # Just making a passthrough tiles for now
         @core(ct[0][1], "passthrough.o")
@@ -136,7 +143,7 @@ def loafty():
                         elem_out[i] = elem_in[i]
                     of_1to2.release(ObjectFifoPort.Consume, 1)
                     of_2to3.release(ObjectFifoPort.Produce, 1)
-        @core(ct[0][3])
+        @core(ct[3][3])
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
@@ -152,10 +159,10 @@ def loafty():
         # To/from AIE-array data movement
         @runtime_sequence(tensor_ty, scalar_ty, tensor_ty)
         def sequence(A, F, C):
-            npu_dma_memcpy_nd(metadata=of_in0, bd_id=1, mem=A, sizes=[1, 1, 1, MSIZE])
-            npu_dma_memcpy_nd(metadata=of_factor, bd_id=2, mem=F, sizes=[1, 1, 1, 1])
+            npu_dma_memcpy_nd(metadata=of_in1, bd_id=1, mem=A, sizes=[1, 1, 1, MSIZE])
+            npu_dma_memcpy_nd(metadata=of_in0, bd_id=2, mem=F, sizes=[1, 1, 1, 1])
             npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=C, sizes=[1, 1, 1, MSIZE])
-            # We know of_out will complete after of_in and of_factor, so it is sufficient to just wait for of_out
+            # We know of_out will complete after of_in and of_in0, so it is sufficient to just wait for of_out
             dma_wait(of_out)
 
 

@@ -49,12 +49,6 @@ in1to2_buff_1 = .;
 /* No tile with memory exists to the west. */
 . = 0x50000;
 . += 0x10000;
-. = 0x60400;
-out_buff_0 = .;
-. += 0x1000;
-. = 0x61400;
-out_buff_1 = .;
-. += 0x1000;
 . = 0x70400;
 in2to3_buff_0 = .;
 . += 0x1000;
