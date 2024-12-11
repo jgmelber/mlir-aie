@@ -36,10 +36,27 @@ target triple = "aie2"
 @of_c22toc12_buff_0 = external global [1024 x float]
 @of_c12toc11_buff_1 = external global [1024 x float]
 @of_c12toc11_buff_0 = external global [1024 x float]
-@out_buff_1 = external global [1024 x float]
-@out_buff_0 = external global [1024 x float]
-@out_cons = external global [1024 x float]
-@out = external global [1024 x float]
+@ofc11toc02_buff_1 = external global [1024 x float]
+@ofc11toc02_buff_0 = external global [1024 x float]
+@ofc11toc02_cons_buff_1 = external global [1024 x float]
+@ofc11toc02_cons_buff_0 = external global [1024 x float]
+@ofc02toc01_buff_9 = external global [1 x float]
+@ofc02toc01_buff_8 = external global [1 x float]
+@ofc02toc01_buff_7 = external global [1 x float]
+@ofc02toc01_buff_6 = external global [1 x float]
+@ofc02toc01_buff_5 = external global [1 x float]
+@ofc02toc01_buff_4 = external global [1 x float]
+@ofc02toc01_buff_3 = external global [1 x float]
+@ofc02toc01_buff_2 = external global [1 x float]
+@ofc02toc01_buff_1 = external global [1 x float]
+@ofc02toc01_buff_0 = external global [1 x float]
+@out_buff_1 = external global [1 x float]
+@out_buff_0 = external global [1 x float]
+@out_cons = external global [1 x float]
+@out = external global [1 x float]
+@ofc02toc01 = external global [1 x float]
+@ofc11toc02_cons = external global [1024 x float]
+@ofc11toc02 = external global [1024 x float]
 @of_c12toc11 = external global [1024 x float]
 @of_c22toc12 = external global [1024 x float]
 @of_c21toc22 = external global [1024 x float]
@@ -90,6 +107,53 @@ declare void @vector_mult_aie_scalar(ptr, ptr, ptr, i32)
 
 declare void @mean(ptr, ptr, i32)
 
+define void @core_0_4() {
+  br label %1
+
+1:                                                ; preds = %17, %0
+  %2 = phi i64 [ %18, %17 ], [ 0, %0 ]
+  %3 = icmp slt i64 %2, 9223372036854775807
+  br i1 %3, label %4, label %19
+
+4:                                                ; preds = %7, %1
+  %5 = phi i64 [ %16, %7 ], [ 0, %1 ]
+  %6 = icmp slt i64 %5, 10
+  br i1 %6, label %7, label %17
+
+7:                                                ; preds = %4
+  call void @llvm.aie2.acquire(i32 52, i32 -1)
+  call void @llvm.aie2.acquire(i32 49, i32 -1)
+  %8 = and i64 ptrtoint (ptr @out_buff_0 to i64), 31
+  %9 = icmp eq i64 %8, 0
+  call void @llvm.assume(i1 %9)
+  %10 = and i64 ptrtoint (ptr @ofc11toc02_cons_buff_0 to i64), 31
+  %11 = icmp eq i64 %10, 0
+  call void @llvm.assume(i1 %11)
+  call void @mean(ptr @ofc11toc02_cons_buff_0, ptr @out_buff_0, i32 1024)
+  call void @llvm.aie2.release(i32 48, i32 1)
+  call void @llvm.aie2.release(i32 53, i32 1)
+  call void @llvm.aie2.acquire(i32 52, i32 -1)
+  call void @llvm.aie2.acquire(i32 49, i32 -1)
+  %12 = and i64 ptrtoint (ptr @out_buff_1 to i64), 31
+  %13 = icmp eq i64 %12, 0
+  call void @llvm.assume(i1 %13)
+  %14 = and i64 ptrtoint (ptr @ofc11toc02_cons_buff_1 to i64), 31
+  %15 = icmp eq i64 %14, 0
+  call void @llvm.assume(i1 %15)
+  call void @mean(ptr @ofc11toc02_cons_buff_1, ptr @out_buff_1, i32 1024)
+  call void @llvm.aie2.release(i32 48, i32 1)
+  call void @llvm.aie2.release(i32 53, i32 1)
+  %16 = add i64 %5, 2
+  br label %4
+
+17:                                               ; preds = %4
+  %18 = add i64 %2, 1
+  br label %1
+
+19:                                               ; preds = %1
+  ret void
+}
+
 define void @core_1_3() {
   br label %1
 
@@ -107,7 +171,7 @@ define void @core_1_3() {
   call void @llvm.aie2.acquire(i32 50, i32 -1)
   call void @llvm.aie2.acquire(i32 49, i32 -1)
   call void @llvm.aie2.acquire(i32 35, i32 -1)
-  %8 = and i64 ptrtoint (ptr @out_buff_0 to i64), 31
+  %8 = and i64 ptrtoint (ptr @ofc11toc02_buff_0 to i64), 31
   %9 = icmp eq i64 %8, 0
   call void @llvm.assume(i1 %9)
   %10 = and i64 ptrtoint (ptr @of_c12toc11_buff_0 to i64), 31
@@ -116,14 +180,14 @@ define void @core_1_3() {
   %12 = and i64 ptrtoint (ptr @in1_cons_buff_0 to i64), 31
   %13 = icmp eq i64 %12, 0
   call void @llvm.assume(i1 %13)
-  call void @vector_mult_aie_scalar(ptr @in1_cons_buff_0, ptr @of_c12toc11_buff_0, ptr @out_buff_0, i32 1024)
+  call void @vector_mult_aie_scalar(ptr @in1_cons_buff_0, ptr @of_c12toc11_buff_0, ptr @ofc11toc02_buff_0, i32 1024)
   call void @llvm.aie2.release(i32 48, i32 1)
   call void @llvm.aie2.release(i32 34, i32 1)
   call void @llvm.aie2.release(i32 51, i32 1)
   call void @llvm.aie2.acquire(i32 50, i32 -1)
   call void @llvm.aie2.acquire(i32 49, i32 -1)
   call void @llvm.aie2.acquire(i32 35, i32 -1)
-  %14 = and i64 ptrtoint (ptr @out_buff_1 to i64), 31
+  %14 = and i64 ptrtoint (ptr @ofc11toc02_buff_1 to i64), 31
   %15 = icmp eq i64 %14, 0
   call void @llvm.assume(i1 %15)
   %16 = and i64 ptrtoint (ptr @of_c12toc11_buff_1 to i64), 31
@@ -132,7 +196,7 @@ define void @core_1_3() {
   %18 = and i64 ptrtoint (ptr @in1_cons_buff_1 to i64), 31
   %19 = icmp eq i64 %18, 0
   call void @llvm.assume(i1 %19)
-  call void @vector_mult_aie_scalar(ptr @in1_cons_buff_1, ptr @of_c12toc11_buff_1, ptr @out_buff_1, i32 1024)
+  call void @vector_mult_aie_scalar(ptr @in1_cons_buff_1, ptr @of_c12toc11_buff_1, ptr @ofc11toc02_buff_1, i32 1024)
   call void @llvm.aie2.release(i32 48, i32 1)
   call void @llvm.aie2.release(i32 34, i32 1)
   call void @llvm.aie2.release(i32 51, i32 1)

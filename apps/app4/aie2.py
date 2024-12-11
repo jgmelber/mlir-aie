@@ -73,6 +73,7 @@ def loafty():
     def device_body():
         tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.float32]]
         tile_ty = np.ndarray[(TSIZE,), np.dtype[np.float32]]
+        mean_ty = np.ndarray[(9,), np.dtype[np.float32]]
         scalar_ty = np.ndarray[(1,), np.dtype[np.float32]]
 
         # AIE Core Function declarations
@@ -112,13 +113,13 @@ def loafty():
             # input of the visibilities
         of_c12toc11 = object_fifo("of_c12toc11", ct[1][2], ct[1][1], 2, tile_ty)
         # M1 = mean MU (ct[0][2])
-        # ofc11toc02 = object_fifo()
+        ofc11toc02 = object_fifo("ofc11toc02", ct[1][1], ct[0][2], 2, tile_ty)
         # M2 = mean M1 (ct[0][1])
-
+        ofc02toc01 = object_fifo("ofc02toc01", ct[0][2], ct[0][1], 10, scalar_ty)
         # M3 = mean M2 (ct[0][0])
         
         # Output
-        of_out = object_fifo("out", ct[1][1], st[1], 2, tile_ty)
+        of_out = object_fifo("out", ct[0][2], st[1], 2, scalar_ty)
 
         # Set up compute tiles        
         @core(ct[1][0], "scale.o") # This is scale of u with l
@@ -181,16 +182,40 @@ def loafty():
             for _ in range_(sys.maxsize):
                 # Number of sub-vector "tile" iterations
                 for _ in range_(ITER_M):
-                    mult_out = of_out.acquire(ObjectFifoPort.Produce, 1)
+                    mult_out = ofc11toc02.acquire(ObjectFifoPort.Produce, 1)
                     mult_in1 = of_in_vis.acquire(ObjectFifoPort.Consume, 1)
                     mult_in2 = of_c12toc11.acquire(ObjectFifoPort.Consume, 1)
                     kernels['mult_scalar'](mult_in1, mult_in2, mult_out, TSIZE)
                     of_in_vis.release(ObjectFifoPort.Consume, 1)
                     of_c12toc11.release(ObjectFifoPort.Consume, 1)
+                    ofc11toc02.release(ObjectFifoPort.Produce, 1)
+
+        @core(ct[0][2], "mean.o") 
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER_M):
+                    mean_out = of_out.acquire(ObjectFifoPort.Produce, 1)
+                    mean_in = ofc11toc02.acquire(ObjectFifoPort.Consume, 1)
+                    kernels['mean'](mean_in, mean_out, TSIZE)
+                    ofc11toc02.release(ObjectFifoPort.Consume, 1)
                     of_out.release(ObjectFifoPort.Produce, 1)
 
+        # @core(ct[0][1], "passthrough.o") 
+        # def core_body():
+        #     # Effective while(1)
+        #     for _ in range_(sys.maxsize):
+        #         for _ in range_(9):
+        #             # Number of sub-vector "tile" iterations
+        #             mean_out = of_out.acquire(ObjectFifoPort.Produce, 1) # size 1/9
+        #             mean_in = ofc02toc01.acquire(ObjectFifoPort.Consume, 1) # size 1/9
+        #             kernels['passthrough'](mean_in, mean_out, 1)
+        #             ofc02toc01.release(ObjectFifoPort.Consume, 1)
+        #             of_out.release(ObjectFifoPort.Produce, 1)
+
         # To/from AIE-array data movement
-        @runtime_sequence(scalar_ty, tensor_ty, tensor_ty, scalar_ty, tensor_ty)
+        @runtime_sequence(scalar_ty, tensor_ty, tensor_ty, scalar_ty, mean_ty)
         def sequence(factor, vis, u, l, output):
             npu_dma_memcpy_nd(metadata=of_in_factor, bd_id=1, mem=factor, sizes=[1, 1, 1, 1]) # input: factor (2 * pi * f / SL)
             npu_dma_memcpy_nd(metadata=of_in_vis, bd_id=2, mem=vis, sizes=[1, 1, 1, MSIZE]) # input: visibilities
@@ -200,7 +225,7 @@ def loafty():
             # npu_dma_memcpy_nd(metadata=of_in_m, bd_id=6, mem=m, sizes=[1, 1, 1, 1]) # input: m (baseline scale)
             # npu_dma_memcpy_nd(metadata=of_in_w, bd_id=7, mem=w, sizes=[1, 1, 1, MSIZE]) # input: w (baselines)
             # npu_dma_memcpy_nd(metadata=of_in_n, bd_id=8, mem=n, sizes=[1, 1, 1, 1]) # input: n (baseline scale)
-            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, MSIZE]) # output
+            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, 9]) # output
             # We know of_out will complete after of_in and of_in_factor, so it is sufficient to just wait for of_out
             dma_wait(of_out)
 

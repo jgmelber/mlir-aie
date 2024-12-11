@@ -2,7 +2,7 @@
 MEMORY
 {
    program (RX) : ORIGIN = 0, LENGTH = 0x0020000
-   data (!RX) : ORIGIN = 0x75000, LENGTH = 0xB000
+   data (!RX) : ORIGIN = 0x72430, LENGTH = 0xDBD0
 }
 ENTRY(__start)
 SECTIONS
@@ -40,73 +40,52 @@ SECTIONS
 . = 0x70000;
 _sp_start_value_DM_stack = .;
 . += 0x400; /* stack */
-. = 0x40400;
-ofc11toc02_buff_0 = .;
-. += 0x1000;
-. = 0x41400;
-ofc11toc02_buff_1 = .;
-. += 0x1000;
-. = 0x42400;
-in1_cons_buff_0 = .;
-. += 0x1000;
-. = 0x44000;
-in1_cons_buff_1 = .;
-. += 0x1000;
-. = 0x52400;
+/* No tile with memory exists to the west. */
+. = 0x50000;
+. += 0x10000;
+. = 0x72400;
 out_buff_0 = .;
 . += 0x4;
-. = 0x52404;
+. = 0x72404;
 out_buff_1 = .;
 . += 0x4;
-. = 0x52408;
+. = 0x72408;
 ofc02toc01_buff_0 = .;
 . += 0x4;
-. = 0x5240C;
+. = 0x7240C;
 ofc02toc01_buff_1 = .;
 . += 0x4;
-. = 0x52410;
+. = 0x72410;
 ofc02toc01_buff_2 = .;
 . += 0x4;
-. = 0x52414;
+. = 0x72414;
 ofc02toc01_buff_3 = .;
 . += 0x4;
-. = 0x52418;
+. = 0x72418;
 ofc02toc01_buff_4 = .;
 . += 0x4;
-. = 0x5241C;
+. = 0x7241C;
 ofc02toc01_buff_5 = .;
 . += 0x4;
-. = 0x52420;
+. = 0x72420;
 ofc02toc01_buff_6 = .;
 . += 0x4;
-. = 0x52424;
+. = 0x72424;
 ofc02toc01_buff_7 = .;
 . += 0x4;
-. = 0x52428;
+. = 0x72428;
 ofc02toc01_buff_8 = .;
 . += 0x4;
-. = 0x5242C;
+. = 0x7242C;
 ofc02toc01_buff_9 = .;
 . += 0x4;
-. = 0x50400;
+. = 0x70400;
 ofc11toc02_cons_buff_0 = .;
 . += 0x1000;
-. = 0x51400;
-ofc11toc02_cons_buff_1 = .;
-. += 0x1000;
-. = 0x70400;
-of_c12toc11_buff_0 = .;
-. += 0x1000;
 . = 0x71400;
-of_c12toc11_buff_1 = .;
-. += 0x1000;
-. = 0x72400;
-of_c22toc12_buff_0 = .;
-. += 0x1000;
-. = 0x74000;
-of_c22toc12_buff_1 = .;
+ofc11toc02_cons_buff_1 = .;
 . += 0x1000;
   .bss : { *(.bss*) } > data
 }
-INPUT(passthrough.o)
-PROVIDE(main = core_1_4);
+INPUT(mean.o)
+PROVIDE(main = core_0_4);

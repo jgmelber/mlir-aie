@@ -21,8 +21,12 @@ target triple = "aie2"
 @of_c22toc12_buff_0 = external global [1024 x float]
 @of_c12toc11_buff_1 = external global [1024 x float]
 @of_c12toc11_buff_0 = external global [1024 x float]
-@out_buff_1 = external global [1024 x float]
-@out_buff_0 = external global [1024 x float]
+@ofc11toc02_buff_1 = external global [1024 x float]
+@ofc11toc02_buff_0 = external global [1024 x float]
+@ofc11toc02_cons_buff_1 = external global [1024 x float]
+@ofc11toc02_cons_buff_0 = external global [1024 x float]
+@out_buff_1 = external global [1 x float]
+@out_buff_0 = external global [1 x float]
 
 ; Function Attrs: nounwind
 declare void @llvm.aie2.acquire(i32, i32) #0
@@ -36,14 +40,91 @@ declare void @passthrough(ptr, ptr, i32) local_unnamed_addr
 
 declare void @vector_mult_aie_scalar(ptr, ptr, ptr, i32) local_unnamed_addr
 
-define void @core_1_3() local_unnamed_addr {
+declare void @mean(ptr, ptr, i32) local_unnamed_addr
+
+define void @core_0_4() local_unnamed_addr {
   %1 = and i64 ptrtoint (ptr @out_buff_0 to i64), 28
+  %2 = icmp eq i64 %1, 0
+  %3 = and i64 ptrtoint (ptr @ofc11toc02_cons_buff_0 to i64), 28
+  %4 = icmp eq i64 %3, 0
+  %5 = and i64 ptrtoint (ptr @out_buff_1 to i64), 28
+  %6 = icmp eq i64 %5, 0
+  %7 = and i64 ptrtoint (ptr @ofc11toc02_cons_buff_1 to i64), 28
+  %8 = icmp eq i64 %7, 0
+  br label %.preheader
+
+.preheader:                                       ; preds = %0, %.preheader
+  %9 = phi i64 [ 0, %0 ], [ %10, %.preheader ]
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @llvm.assume(i1 %2)
+  tail call void @llvm.assume(i1 %4)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @llvm.assume(i1 %6)
+  tail call void @llvm.assume(i1 %8)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  tail call void @llvm.aie2.acquire(i32 52, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 49, i32 -1)
+  tail call void @mean(ptr nonnull @ofc11toc02_cons_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @llvm.aie2.release(i32 48, i32 1)
+  tail call void @llvm.aie2.release(i32 53, i32 1)
+  %10 = add nuw nsw i64 %9, 1
+  %.not = icmp eq i64 %10, 9223372036854775807
+  br i1 %.not, label %11, label %.preheader
+
+11:                                               ; preds = %.preheader
+  ret void
+}
+
+define void @core_1_3() local_unnamed_addr {
+  %1 = and i64 ptrtoint (ptr @ofc11toc02_buff_0 to i64), 28
   %2 = icmp eq i64 %1, 0
   %3 = and i64 ptrtoint (ptr @of_c12toc11_buff_0 to i64), 28
   %4 = icmp eq i64 %3, 0
   %5 = and i64 ptrtoint (ptr @in1_cons_buff_0 to i64), 28
   %6 = icmp eq i64 %5, 0
-  %7 = and i64 ptrtoint (ptr @out_buff_1 to i64), 28
+  %7 = and i64 ptrtoint (ptr @ofc11toc02_buff_1 to i64), 28
   %8 = icmp eq i64 %7, 0
   %9 = and i64 ptrtoint (ptr @of_c12toc11_buff_1 to i64), 28
   %10 = icmp eq i64 %9, 0
@@ -59,7 +140,7 @@ define void @core_1_3() local_unnamed_addr {
   tail call void @llvm.assume(i1 %2)
   tail call void @llvm.assume(i1 %4)
   tail call void @llvm.assume(i1 %6)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @ofc11toc02_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
@@ -69,63 +150,63 @@ define void @core_1_3() local_unnamed_addr {
   tail call void @llvm.assume(i1 %8)
   tail call void @llvm.assume(i1 %10)
   tail call void @llvm.assume(i1 %12)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @ofc11toc02_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @ofc11toc02_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @ofc11toc02_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @ofc11toc02_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @ofc11toc02_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @ofc11toc02_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @ofc11toc02_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @out_buff_0, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_0, ptr nonnull @of_c12toc11_buff_0, ptr nonnull @ofc11toc02_buff_0, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)
   tail call void @llvm.aie2.acquire(i32 50, i32 -1)
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
   tail call void @llvm.aie2.acquire(i32 35, i32 -1)
-  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @out_buff_1, i32 1024)
+  tail call void @vector_mult_aie_scalar(ptr nonnull @in1_cons_buff_1, ptr nonnull @of_c12toc11_buff_1, ptr nonnull @ofc11toc02_buff_1, i32 1024)
   tail call void @llvm.aie2.release(i32 48, i32 1)
   tail call void @llvm.aie2.release(i32 34, i32 1)
   tail call void @llvm.aie2.release(i32 51, i32 1)

@@ -15,8 +15,8 @@
 
 extern "C" {
 
-void mean(int32_t *a, int32_t *c, int32_t N) {
-    int sum = 0;
+void mean(float *a, float *c, int32_t N) {
+    float sum = 0.0f;
     for (int i = 0; i < N; i++) {
         sum += a[i];
     }
