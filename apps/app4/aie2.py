@@ -44,9 +44,14 @@ def declaring_kernel_func(tile_ty, scalar_ty):
     kernel2 = external_func("vector_add_aie_scalar",
         inputs=[tile_ty, tile_ty, tile_ty, np.int32],
     )
+    # kenrel for adding two vectors (scalar)
+    name3 = "mult_scalar"
+    kernel3 = external_func("vector_mult_aie_scalar",
+        inputs=[tile_ty, tile_ty, tile_ty, np.int32],
+    )
     # kernel for mean of a vector (scalar)
-    name3 = "mean"
-    kernel3 = external_func("mean",
+    name4 = "mean"
+    kernel4 = external_func("mean",
         inputs=[tile_ty, scalar_ty, np.int32],
     )
     return {
@@ -54,6 +59,7 @@ def declaring_kernel_func(tile_ty, scalar_ty):
         name1: kernel1,
         name2: kernel2,
         name3: kernel3,
+        name4: kernel4,
     }
 
 
@@ -78,8 +84,8 @@ def loafty():
         # AIE-array data movement with object fifos
         # Inputs
         # Column 0 (ct[0][0])
-        of_in_factor = object_fifo("in0", st[0], ct[0][0], 2, scalar_ty) # input: factor (2 * pi * f / SL)
-        of_in_vis = object_fifo("in1", st[0], ct[0][0], 2, tile_ty) # input: visibilities
+        of_in_factor = object_fifo("in0", st[0], ct[2][2], 2, scalar_ty) # input: factor (2 * pi * f / SL)
+        of_in_vis = object_fifo("in1", st[0], ct[1][1], 2, tile_ty) # input: visibilities
         # Column 1 (ct[1][0])
         of_in_u = object_fifo("in2", st[1], ct[1][0], 2, tile_ty) # input: u (baselines)
         of_in_l = object_fifo("in3", st[1], ct[1][0], 2, scalar_ty) # input: l (baseline scale)
@@ -94,7 +100,7 @@ def loafty():
         # S1 = add w*n, v*m (ct[3][1])
         of_c20toc31 = object_fifo("of_c20toc21", ct[2][0], ct[3][1], 2, tile_ty)
         of_c30toc31 = object_fifo("of_c30toc21", ct[3][0], ct[3][1], 2, tile_ty)
-        # S2 = add S1, u*l (ct[2][1])
+        # # S2 = add S1, u*l (ct[2][1])
         of_c10toc21 = object_fifo("of_c10toc11", ct[1][0], ct[2][1], 2, tile_ty)
         of_c31toc21 = object_fifo("of_c21toc11", ct[3][1], ct[2][1], 2, tile_ty)
         # F = factor * S2 (ct[2][2])
@@ -106,66 +112,82 @@ def loafty():
             # input of the visibilities
         of_c12toc11 = object_fifo("of_c12toc11", ct[1][2], ct[1][1], 2, tile_ty)
         # M1 = mean MU (ct[0][2])
-        
+        # ofc11toc02 = object_fifo()
         # M2 = mean M1 (ct[0][1])
 
         # M3 = mean M2 (ct[0][0])
         
         # Output
-        of_out = object_fifo("out", ct[0][0], st[3], 2, tile_ty)
+        of_out = object_fifo("out", ct[1][1], st[1], 2, tile_ty)
 
-        # Set up compute tiles
-        # Compute tile 2
-        @core(ct[0][0], "scale.o")
+        # Set up compute tiles        
+        @core(ct[1][0], "scale.o") # This is scale of u with l
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
-                elem_factor = of_in_factor.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
+                l = of_in_l.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
                 # Number of sub-vector "tile" iterations
                 for _ in range_(ITER_M):
-                    elem_out = of_out.acquire(ObjectFifoPort.Produce, 1)
-                    elem_in = of_in_vis.acquire(ObjectFifoPort.Consume, 1)
-                    kernels['scale_scalar'](elem_in, elem_out, elem_factor, TSIZE)
-                    of_in_vis.release(ObjectFifoPort.Consume, 1)
-                    of_out.release(ObjectFifoPort.Produce, 1)
+                    u_out = of_c10toc21.acquire(ObjectFifoPort.Produce, 1)
+                    u_in = of_in_u.acquire(ObjectFifoPort.Consume, 1)
+                    kernels['scale_scalar'](u_in, u_out, l, TSIZE)
+                    of_in_u.release(ObjectFifoPort.Consume, 1)
+                    of_c10toc21.release(ObjectFifoPort.Produce, 1)
+                of_in_l.release(ObjectFifoPort.Consume, 1)
+
+        @core(ct[2][1], "passthrough.o") # should be add
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER_M):
+                    # cant use 'of_c31toc21' yet cause of the input limit rn, so just passthrough for now instead of add
+                    out_ = of_c21toc22.acquire(ObjectFifoPort.Produce, 1)
+                    in_ = of_c10toc21.acquire(ObjectFifoPort.Consume, 1)
+                    kernels['passthrough'](in_, out_, TSIZE)
+                    of_c10toc21.release(ObjectFifoPort.Consume, 1)
+                    of_c21toc22.release(ObjectFifoPort.Produce, 1)
+
+        @core(ct[2][2], "scale.o") # This is the scale of the factor to the add of the scaled baselines
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                factor = of_in_factor.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER_M):
+                    sum_out = of_c22toc12.acquire(ObjectFifoPort.Produce, 1)
+                    sum_in = of_c21toc22.acquire(ObjectFifoPort.Consume, 1)
+                    kernels['scale_scalar'](sum_in, sum_out, factor, TSIZE)
+                    of_c21toc22.release(ObjectFifoPort.Consume, 1)
+                    of_c22toc12.release(ObjectFifoPort.Produce, 1)
                 of_in_factor.release(ObjectFifoPort.Consume, 1)
-        # Compute tile 3
-        # Just making a passthrough tiles for now
-        # @core(ct[0][1], "passthrough.o")
-        # def core_body():
-        #     # Effective while(1)
-        #     for _ in range_(sys.maxsize):
-        #         # Number of sub-vector "tile" iterations
-        #         for _ in range_(ITER_M):
-        #             elem_out = of_1to2.acquire(ObjectFifoPort.Produce, 1)
-        #             elem_in = of_0to1.acquire(ObjectFifoPort.Consume, 1)
-        #             kernels['passthrough'](elem_in, elem_out, TSIZE)
-        #             of_0to1.release(ObjectFifoPort.Consume, 1)
-        #             of_1to2.release(ObjectFifoPort.Produce, 1)
-        # @core(ct[0][2])
-        # def core_body():
-        #     # Effective while(1)
-        #     for _ in range_(sys.maxsize):
-        #         # Number of sub-vector "tile" iterations
-        #         for _ in range_(ITER_M):
-        #             elem_out = of_2to3.acquire(ObjectFifoPort.Produce, 1)
-        #             elem_in = of_1to2.acquire(ObjectFifoPort.Consume, 1)
-        #             for i in range_(TSIZE):
-        #                 elem_out[i] = elem_in[i]
-        #             of_1to2.release(ObjectFifoPort.Consume, 1)
-        #             of_2to3.release(ObjectFifoPort.Produce, 1)
-        # @core(ct[3][3])
-        # def core_body():
-        #     # Effective while(1)
-        #     for _ in range_(sys.maxsize):
-        #         # Number of sub-vector "tile" iterations
-        #         for _ in range_(ITER_M):
-        #             elem_out = of_out.acquire(ObjectFifoPort.Produce, 1)
-        #             elem_in = of_2to3.acquire(ObjectFifoPort.Consume, 1)
-        #             for i in range_(TSIZE):
-        #                 elem_out[i] = elem_in[i]
-        #             of_2to3.release(ObjectFifoPort.Consume, 1)
-        #             of_out.release(ObjectFifoPort.Produce, 1)
+
+        @core(ct[1][2], "passthrough.o") # should be the cos operation
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER_M):
+                    # using passthrough until learn how to use LUT
+                    cos_out = of_c12toc11.acquire(ObjectFifoPort.Produce, 1)
+                    cos_in = of_c22toc12.acquire(ObjectFifoPort.Consume, 1)
+                    kernels['passthrough'](cos_in, cos_out, TSIZE)
+                    of_c22toc12.release(ObjectFifoPort.Consume, 1)
+                    of_c12toc11.release(ObjectFifoPort.Produce, 1)
+
+        @core(ct[1][1], "vector_mult.o") # This is the elementwise mult of the cos result with the visibilities
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                # Number of sub-vector "tile" iterations
+                for _ in range_(ITER_M):
+                    mult_out = of_out.acquire(ObjectFifoPort.Produce, 1)
+                    mult_in1 = of_in_vis.acquire(ObjectFifoPort.Consume, 1)
+                    mult_in2 = of_c12toc11.acquire(ObjectFifoPort.Consume, 1)
+                    kernels['mult_scalar'](mult_in1, mult_in2, mult_out, TSIZE)
+                    of_in_vis.release(ObjectFifoPort.Consume, 1)
+                    of_c12toc11.release(ObjectFifoPort.Consume, 1)
+                    of_out.release(ObjectFifoPort.Produce, 1)
 
         # To/from AIE-array data movement
         @runtime_sequence(scalar_ty, tensor_ty, tensor_ty, scalar_ty, tensor_ty)

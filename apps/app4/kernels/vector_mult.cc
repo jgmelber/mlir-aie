@@ -15,10 +15,10 @@
 
 extern "C" {
 
-void vector_add_aie_scalar(float *a, float *b, float *c,
+void vector_mult_aie_scalar(float *a, float *b, float *c,
                                   int32_t N) {
   for (int i = 0; i < N; i++) {
-    c[i] = a[i] + b[i];
+    c[i] = a[i] * b[i];
   }
 }
 

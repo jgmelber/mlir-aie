@@ -30,11 +30,15 @@ build/vector_add.o: ${srcdir}/kernels/vector_add.cc
 	mkdir -p ${@D}
 	cd ${@D} && ${PEANO_INSTALL_DIR}/bin/clang++ ${PEANOWRAP2_FLAGS} -c $< -o ${@F}
 
+build/vector_mult.o: ${srcdir}/kernels/vector_mult.cc
+	mkdir -p ${@D}
+	cd ${@D} && ${PEANO_INSTALL_DIR}/bin/clang++ ${PEANOWRAP2_FLAGS} -c $< -o ${@F}
+
 build/mean.o: ${srcdir}/kernels/mean.cc
 	mkdir -p ${@D}
 	cd ${@D} && ${PEANO_INSTALL_DIR}/bin/clang++ ${PEANOWRAP2_FLAGS} -c $< -o ${@F}
 
-build/final.xclbin: build/aie.mlir build/scale.o build/passthrough.o build/vector_add.o build/mean.o
+build/final.xclbin: build/aie.mlir build/scale.o build/passthrough.o build/vector_add.o build/vector_mult.o build/mean.o
 	mkdir -p ${@D}
 	cd ${@D} && aiecc.py --aie-generate-cdo --no-compile-host --xclbin-name=${@F} \
 				--no-xchesscc --no-xbridge \

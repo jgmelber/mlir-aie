@@ -133,6 +133,18 @@ def main(opts):
             ref = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) * inout0
             e = np.equal(output_buffer, ref)
             errors = errors + np.size(e) - np.count_nonzero(e)
+        # My own error check
+        errors = 0
+        print(f"weird thing: {np.count_nonzero(e)}")
+        for j in range(0, INOUT2_VOLUME):
+            a = ref[j]
+            b = entire_buffer[j]
+            # print(f"correct: {a}, result: {b}, equal: {a == b}")
+            if a != b:
+                errors = errors + 1
+        print(f"errors in iter {i}: {errors}")
+        for j in entire_buffer[:10]:
+            print(j)
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)
