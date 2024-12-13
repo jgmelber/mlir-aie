@@ -221,10 +221,6 @@ def loafty():
             npu_dma_memcpy_nd(metadata=of_in_vis, bd_id=2, mem=vis, sizes=[1, 1, 1, MSIZE]) # input: visibilities
             npu_dma_memcpy_nd(metadata=of_in_u, bd_id=3, mem=u, sizes=[1, 1, 1, MSIZE]) # input: u (baselines)
             npu_dma_memcpy_nd(metadata=of_in_l, bd_id=4, mem=l, sizes=[1, 1, 1, 1]) # input: l (baseline scale)
-            # npu_dma_memcpy_nd(metadata=of_in_v, bd_id=5, mem=v, sizes=[1, 1, 1, MSIZE]) # input: v (baselines)
-            # npu_dma_memcpy_nd(metadata=of_in_m, bd_id=6, mem=m, sizes=[1, 1, 1, 1]) # input: m (baseline scale)
-            # npu_dma_memcpy_nd(metadata=of_in_w, bd_id=7, mem=w, sizes=[1, 1, 1, MSIZE]) # input: w (baselines)
-            # npu_dma_memcpy_nd(metadata=of_in_n, bd_id=8, mem=n, sizes=[1, 1, 1, 1]) # input: n (baseline scale)
             npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, 9]) # output
             # We know of_out will complete after of_in and of_in_factor, so it is sufficient to just wait for of_out
             dma_wait(of_out)

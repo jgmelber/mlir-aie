@@ -29,24 +29,24 @@ module {
     %tile_3_3 = aie.tile(3, 3)
     %tile_3_4 = aie.tile(3, 4)
     %tile_3_5 = aie.tile(3, 5)
-    aie.objectfifo @in0(%tile_0_0, {%tile_2_4}, 2 : i32) : !aie.objectfifo<memref<1xf32>>
-    aie.objectfifo @in1(%tile_0_0, {%tile_1_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @in2(%tile_1_0, {%tile_1_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @in3(%tile_1_0, {%tile_1_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>>
-    aie.objectfifo @in4(%tile_2_0, {%tile_2_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @in5(%tile_2_0, {%tile_2_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>>
-    aie.objectfifo @in6(%tile_3_0, {%tile_3_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @in7(%tile_3_0, {%tile_3_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>>
-    aie.objectfifo @of_c20toc21(%tile_2_2, {%tile_3_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @of_c30toc21(%tile_3_2, {%tile_3_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @of_c10toc11(%tile_1_2, {%tile_2_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @of_c21toc11(%tile_3_3, {%tile_2_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @of_c21toc22(%tile_2_3, {%tile_2_4}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @of_c22toc12(%tile_2_4, {%tile_1_4}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @of_c12toc11(%tile_1_4, {%tile_1_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @ofc11toc02(%tile_1_3, {%tile_0_4}, 2 : i32) : !aie.objectfifo<memref<1024xf32>>
-    aie.objectfifo @ofc02toc01(%tile_0_4, {%tile_0_3}, 10 : i32) : !aie.objectfifo<memref<1xf32>>
-    aie.objectfifo @out(%tile_0_4, {%tile_1_0}, 2 : i32) : !aie.objectfifo<memref<1xf32>>
+    aie.objectfifo @in0(%tile_0_0, {%tile_2_4}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
+    aie.objectfifo @in1(%tile_0_0, {%tile_1_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @in2(%tile_1_0, {%tile_1_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @in3(%tile_1_0, {%tile_1_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
+    aie.objectfifo @in4(%tile_2_0, {%tile_2_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @in5(%tile_2_0, {%tile_2_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
+    aie.objectfifo @in6(%tile_3_0, {%tile_3_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @in7(%tile_3_0, {%tile_3_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
+    aie.objectfifo @of_c20toc21(%tile_2_2, {%tile_3_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @of_c30toc21(%tile_3_2, {%tile_3_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @of_c10toc11(%tile_1_2, {%tile_2_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @of_c21toc11(%tile_3_3, {%tile_2_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @of_c21toc22(%tile_2_3, {%tile_2_4}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @of_c22toc12(%tile_2_4, {%tile_1_4}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @of_c12toc11(%tile_1_4, {%tile_1_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @ofc11toc02(%tile_1_3, {%tile_0_4}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
+    aie.objectfifo @ofc02toc01(%tile_0_4, {%tile_0_3}, 10 : i32) : !aie.objectfifo<memref<1xf32>> 
+    aie.objectfifo @out(%tile_0_4, {%tile_1_0}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
     %core_1_2 = aie.core(%tile_1_2) {
       %c0 = arith.constant 0 : index
       %c9223372036854775807 = arith.constant 9223372036854775807 : index

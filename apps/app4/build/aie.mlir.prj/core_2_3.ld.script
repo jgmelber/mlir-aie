@@ -2,7 +2,7 @@
 MEMORY
 {
    program (RX) : ORIGIN = 0, LENGTH = 0x0020000
-   data (!RX) : ORIGIN = 0x77000, LENGTH = 0x9000
+   data (!RX) : ORIGIN = 0x7D000, LENGTH = 0x3000
 }
 ENTRY(__start)
 SECTIONS
@@ -43,55 +43,55 @@ _sp_start_value_DM_stack = .;
 . = 0x40000;
 of_c20toc21_buff_0 = .;
 . += 0x1000;
-. = 0x41000;
+. = 0x44000;
 of_c20toc21_buff_1 = .;
 . += 0x1000;
-. = 0x44000;
+. = 0x41000;
 in5_cons_buff_0 = .;
 . += 0x4;
-. = 0x44004;
+. = 0x45000;
 in5_cons_buff_1 = .;
 . += 0x4;
-. = 0x42000;
+. = 0x48000;
 in4_cons_buff_0 = .;
 . += 0x1000;
-. = 0x43000;
+. = 0x4C000;
 in4_cons_buff_1 = .;
 . += 0x1000;
 . = 0x50400;
 ofc11toc02_buff_0 = .;
 . += 0x1000;
-. = 0x51400;
+. = 0x54000;
 ofc11toc02_buff_1 = .;
 . += 0x1000;
-. = 0x52400;
+. = 0x58000;
 in1_cons_buff_0 = .;
 . += 0x1000;
-. = 0x54000;
+. = 0x5C000;
 in1_cons_buff_1 = .;
 . += 0x1000;
 . = 0x60400;
 in0_cons_buff_0 = .;
 . += 0x4;
-. = 0x60404;
+. = 0x64000;
 in0_cons_buff_1 = .;
 . += 0x4;
 . = 0x70400;
 of_c21toc22_buff_0 = .;
 . += 0x1000;
-. = 0x71400;
+. = 0x74000;
 of_c21toc22_buff_1 = .;
 . += 0x1000;
-. = 0x72400;
+. = 0x78000;
 of_c21toc11_buff_0 = .;
 . += 0x1000;
-. = 0x74000;
+. = 0x7C000;
 of_c21toc11_buff_1 = .;
 . += 0x1000;
-. = 0x75000;
+. = 0x71400;
 of_c10toc11_cons_buff_0 = .;
 . += 0x1000;
-. = 0x76000;
+. = 0x75000;
 of_c10toc11_cons_buff_1 = .;
 . += 0x1000;
   .bss : { *(.bss*) } > data

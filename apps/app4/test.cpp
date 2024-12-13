@@ -39,7 +39,7 @@ int main(int argc, const char *argv[]) {
   int n_warmup_iterations = vm["warmup"].as<int>();
 
   constexpr bool VERIFY = true;
-  constexpr int IN_SIZE = 4096;
+  constexpr int IN_SIZE = 9216;
   constexpr int OUT_SIZE = IN_SIZE;
 
   // Load instruction sequence
@@ -60,10 +60,8 @@ int main(int argc, const char *argv[]) {
   // set up the buffer objects
   auto bo_instr = xrt::bo(device, instr_v.size() * sizeof(int),
                           XCL_BO_FLAGS_CACHEABLE, kernel.group_id(1));
-  auto bo_inA = xrt::bo(device, IN_SIZE * sizeof(DATATYPE),
-                        XRT_BO_FLAGS_HOST_ONLY, kernel.group_id(3));
-  auto bo_inFactor = xrt::bo(device, 1 * sizeof(DATATYPE),
-                             XRT_BO_FLAGS_HOST_ONLY, kernel.group_id(4));
+  auto bo_inA = xrt::bo(device, IN_SIZE * sizeof(DATATYPE), XRT_BO_FLAGS_HOST_ONLY, kernel.group_id(3));
+  auto bo_inFactor = xrt::bo(device, 1 * sizeof(DATATYPE), XRT_BO_FLAGS_HOST_ONLY, kernel.group_id(4));
   auto bo_outC = xrt::bo(device, OUT_SIZE * sizeof(DATATYPE),
                          XRT_BO_FLAGS_HOST_ONLY, kernel.group_id(5));
 

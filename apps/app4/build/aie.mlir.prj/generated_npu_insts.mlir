@@ -48,90 +48,90 @@ module {
     %tile_3_0 = aie.tile(3, 0) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 15>}
     %tile_3_2 = aie.tile(3, 2) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 27>}
     %tile_3_3 = aie.tile(3, 3) {controller_id = #aie.packet_info<pkt_type = 0, pkt_id = 29>}
-    %out_buff_0 = aie.buffer(%tile_0_4) {address = 9216 : i32, mem_bank = 0 : i32, sym_name = "out_buff_0"} : memref<1xf32> 
-    %out_buff_1 = aie.buffer(%tile_0_4) {address = 9220 : i32, mem_bank = 0 : i32, sym_name = "out_buff_1"} : memref<1xf32> 
+    %out_buff_0 = aie.buffer(%tile_0_4) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "out_buff_0"} : memref<1xf32> 
+    %out_buff_1 = aie.buffer(%tile_0_4) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "out_buff_1"} : memref<1xf32> 
     %out_prod_lock = aie.lock(%tile_0_4, 4) {init = 2 : i32, sym_name = "out_prod_lock"}
     %out_cons_lock = aie.lock(%tile_0_4, 5) {init = 0 : i32, sym_name = "out_cons_lock"}
-    %ofc02toc01_buff_0 = aie.buffer(%tile_0_4) {address = 9224 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_0"} : memref<1xf32> 
-    %ofc02toc01_buff_1 = aie.buffer(%tile_0_4) {address = 9228 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_1"} : memref<1xf32> 
-    %ofc02toc01_buff_2 = aie.buffer(%tile_0_4) {address = 9232 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_2"} : memref<1xf32> 
-    %ofc02toc01_buff_3 = aie.buffer(%tile_0_4) {address = 9236 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_3"} : memref<1xf32> 
-    %ofc02toc01_buff_4 = aie.buffer(%tile_0_4) {address = 9240 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_4"} : memref<1xf32> 
-    %ofc02toc01_buff_5 = aie.buffer(%tile_0_4) {address = 9244 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_5"} : memref<1xf32> 
-    %ofc02toc01_buff_6 = aie.buffer(%tile_0_4) {address = 9248 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_6"} : memref<1xf32> 
-    %ofc02toc01_buff_7 = aie.buffer(%tile_0_4) {address = 9252 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_7"} : memref<1xf32> 
-    %ofc02toc01_buff_8 = aie.buffer(%tile_0_4) {address = 9256 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_8"} : memref<1xf32> 
-    %ofc02toc01_buff_9 = aie.buffer(%tile_0_4) {address = 9260 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_9"} : memref<1xf32> 
+    %ofc02toc01_buff_0 = aie.buffer(%tile_0_4) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_0"} : memref<1xf32> 
+    %ofc02toc01_buff_1 = aie.buffer(%tile_0_4) {address = 20480 : i32, mem_bank = 1 : i32, sym_name = "ofc02toc01_buff_1"} : memref<1xf32> 
+    %ofc02toc01_buff_2 = aie.buffer(%tile_0_4) {address = 32772 : i32, mem_bank = 2 : i32, sym_name = "ofc02toc01_buff_2"} : memref<1xf32> 
+    %ofc02toc01_buff_3 = aie.buffer(%tile_0_4) {address = 49156 : i32, mem_bank = 3 : i32, sym_name = "ofc02toc01_buff_3"} : memref<1xf32> 
+    %ofc02toc01_buff_4 = aie.buffer(%tile_0_4) {address = 5124 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_4"} : memref<1xf32> 
+    %ofc02toc01_buff_5 = aie.buffer(%tile_0_4) {address = 20484 : i32, mem_bank = 1 : i32, sym_name = "ofc02toc01_buff_5"} : memref<1xf32> 
+    %ofc02toc01_buff_6 = aie.buffer(%tile_0_4) {address = 32776 : i32, mem_bank = 2 : i32, sym_name = "ofc02toc01_buff_6"} : memref<1xf32> 
+    %ofc02toc01_buff_7 = aie.buffer(%tile_0_4) {address = 49160 : i32, mem_bank = 3 : i32, sym_name = "ofc02toc01_buff_7"} : memref<1xf32> 
+    %ofc02toc01_buff_8 = aie.buffer(%tile_0_4) {address = 5128 : i32, mem_bank = 0 : i32, sym_name = "ofc02toc01_buff_8"} : memref<1xf32> 
+    %ofc02toc01_buff_9 = aie.buffer(%tile_0_4) {address = 20488 : i32, mem_bank = 1 : i32, sym_name = "ofc02toc01_buff_9"} : memref<1xf32> 
     %ofc11toc02_cons_buff_0 = aie.buffer(%tile_0_4) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "ofc11toc02_cons_buff_0"} : memref<1024xf32> 
-    %ofc11toc02_cons_buff_1 = aie.buffer(%tile_0_4) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "ofc11toc02_cons_buff_1"} : memref<1024xf32> 
+    %ofc11toc02_cons_buff_1 = aie.buffer(%tile_0_4) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "ofc11toc02_cons_buff_1"} : memref<1024xf32> 
     %ofc11toc02_cons_prod_lock = aie.lock(%tile_0_4, 0) {init = 2 : i32, sym_name = "ofc11toc02_cons_prod_lock"}
     %ofc11toc02_cons_cons_lock = aie.lock(%tile_0_4, 1) {init = 0 : i32, sym_name = "ofc11toc02_cons_cons_lock"}
     %ofc11toc02_buff_0 = aie.buffer(%tile_1_3) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "ofc11toc02_buff_0"} : memref<1024xf32> 
-    %ofc11toc02_buff_1 = aie.buffer(%tile_1_3) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "ofc11toc02_buff_1"} : memref<1024xf32> 
+    %ofc11toc02_buff_1 = aie.buffer(%tile_1_3) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "ofc11toc02_buff_1"} : memref<1024xf32> 
     %ofc11toc02_prod_lock = aie.lock(%tile_1_3, 2) {init = 2 : i32, sym_name = "ofc11toc02_prod_lock"}
     %ofc11toc02_cons_lock = aie.lock(%tile_1_3, 3) {init = 0 : i32, sym_name = "ofc11toc02_cons_lock"}
     %of_c12toc11_buff_0 = aie.buffer(%tile_1_4) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "of_c12toc11_buff_0"} : memref<1024xf32> 
-    %of_c12toc11_buff_1 = aie.buffer(%tile_1_4) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "of_c12toc11_buff_1"} : memref<1024xf32> 
+    %of_c12toc11_buff_1 = aie.buffer(%tile_1_4) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c12toc11_buff_1"} : memref<1024xf32> 
     %of_c12toc11_prod_lock = aie.lock(%tile_1_4, 2) {init = 2 : i32, sym_name = "of_c12toc11_prod_lock"}
     %of_c12toc11_cons_lock = aie.lock(%tile_1_4, 3) {init = 0 : i32, sym_name = "of_c12toc11_cons_lock"}
-    %of_c22toc12_buff_0 = aie.buffer(%tile_1_4) {address = 9216 : i32, mem_bank = 0 : i32, sym_name = "of_c22toc12_buff_0"} : memref<1024xf32> 
-    %of_c22toc12_buff_1 = aie.buffer(%tile_1_4) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c22toc12_buff_1"} : memref<1024xf32> 
+    %of_c22toc12_buff_0 = aie.buffer(%tile_1_4) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "of_c22toc12_buff_0"} : memref<1024xf32> 
+    %of_c22toc12_buff_1 = aie.buffer(%tile_1_4) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "of_c22toc12_buff_1"} : memref<1024xf32> 
     %of_c22toc12_prod_lock = aie.lock(%tile_1_4, 0) {init = 2 : i32, sym_name = "of_c22toc12_prod_lock"}
     %of_c22toc12_cons_lock = aie.lock(%tile_1_4, 1) {init = 0 : i32, sym_name = "of_c22toc12_cons_lock"}
     %of_c21toc22_buff_0 = aie.buffer(%tile_2_3) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "of_c21toc22_buff_0"} : memref<1024xf32> 
-    %of_c21toc22_buff_1 = aie.buffer(%tile_2_3) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "of_c21toc22_buff_1"} : memref<1024xf32> 
+    %of_c21toc22_buff_1 = aie.buffer(%tile_2_3) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c21toc22_buff_1"} : memref<1024xf32> 
     %of_c21toc22_prod_lock = aie.lock(%tile_2_3, 4) {init = 2 : i32, sym_name = "of_c21toc22_prod_lock"}
     %of_c21toc22_cons_lock = aie.lock(%tile_2_3, 5) {init = 0 : i32, sym_name = "of_c21toc22_cons_lock"}
-    %of_c21toc11_buff_0 = aie.buffer(%tile_2_3) {address = 9216 : i32, mem_bank = 0 : i32, sym_name = "of_c21toc11_buff_0"} : memref<1024xf32> 
-    %of_c21toc11_buff_1 = aie.buffer(%tile_2_3) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c21toc11_buff_1"} : memref<1024xf32> 
-    %of_c10toc11_cons_buff_0 = aie.buffer(%tile_2_3) {address = 20480 : i32, mem_bank = 1 : i32, sym_name = "of_c10toc11_cons_buff_0"} : memref<1024xf32> 
-    %of_c10toc11_cons_buff_1 = aie.buffer(%tile_2_3) {address = 24576 : i32, mem_bank = 1 : i32, sym_name = "of_c10toc11_cons_buff_1"} : memref<1024xf32> 
+    %of_c21toc11_buff_0 = aie.buffer(%tile_2_3) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "of_c21toc11_buff_0"} : memref<1024xf32> 
+    %of_c21toc11_buff_1 = aie.buffer(%tile_2_3) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "of_c21toc11_buff_1"} : memref<1024xf32> 
+    %of_c10toc11_cons_buff_0 = aie.buffer(%tile_2_3) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "of_c10toc11_cons_buff_0"} : memref<1024xf32> 
+    %of_c10toc11_cons_buff_1 = aie.buffer(%tile_2_3) {address = 20480 : i32, mem_bank = 1 : i32, sym_name = "of_c10toc11_cons_buff_1"} : memref<1024xf32> 
     %of_c10toc11_cons_prod_lock = aie.lock(%tile_2_3, 0) {init = 2 : i32, sym_name = "of_c10toc11_cons_prod_lock"}
     %of_c10toc11_cons_cons_lock = aie.lock(%tile_2_3, 1) {init = 0 : i32, sym_name = "of_c10toc11_cons_cons_lock"}
     %of_c10toc11_buff_0 = aie.buffer(%tile_1_2) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "of_c10toc11_buff_0"} : memref<1024xf32> 
-    %of_c10toc11_buff_1 = aie.buffer(%tile_1_2) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "of_c10toc11_buff_1"} : memref<1024xf32> 
+    %of_c10toc11_buff_1 = aie.buffer(%tile_1_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c10toc11_buff_1"} : memref<1024xf32> 
     %of_c10toc11_prod_lock = aie.lock(%tile_1_2, 4) {init = 2 : i32, sym_name = "of_c10toc11_prod_lock"}
     %of_c10toc11_cons_lock = aie.lock(%tile_1_2, 5) {init = 0 : i32, sym_name = "of_c10toc11_cons_lock"}
     %of_c30toc21_buff_0 = aie.buffer(%tile_3_2) {address = 0 : i32, mem_bank = 0 : i32, sym_name = "of_c30toc21_buff_0"} : memref<1024xf32> 
-    %of_c30toc21_buff_1 = aie.buffer(%tile_3_2) {address = 4096 : i32, mem_bank = 0 : i32, sym_name = "of_c30toc21_buff_1"} : memref<1024xf32> 
+    %of_c30toc21_buff_1 = aie.buffer(%tile_3_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c30toc21_buff_1"} : memref<1024xf32> 
     %of_c20toc21_cons_buff_0 = aie.buffer(%tile_3_3) {address = 0 : i32, mem_bank = 0 : i32, sym_name = "of_c20toc21_cons_buff_0"} : memref<1024xf32> 
-    %of_c20toc21_cons_buff_1 = aie.buffer(%tile_3_3) {address = 4096 : i32, mem_bank = 0 : i32, sym_name = "of_c20toc21_cons_buff_1"} : memref<1024xf32> 
+    %of_c20toc21_cons_buff_1 = aie.buffer(%tile_3_3) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c20toc21_cons_buff_1"} : memref<1024xf32> 
     %of_c20toc21_cons_prod_lock = aie.lock(%tile_3_3, 0) {init = 2 : i32, sym_name = "of_c20toc21_cons_prod_lock"}
     %of_c20toc21_cons_cons_lock = aie.lock(%tile_3_3, 1) {init = 0 : i32, sym_name = "of_c20toc21_cons_cons_lock"}
     %of_c20toc21_buff_0 = aie.buffer(%tile_2_2) {address = 0 : i32, mem_bank = 0 : i32, sym_name = "of_c20toc21_buff_0"} : memref<1024xf32> 
-    %of_c20toc21_buff_1 = aie.buffer(%tile_2_2) {address = 4096 : i32, mem_bank = 0 : i32, sym_name = "of_c20toc21_buff_1"} : memref<1024xf32> 
+    %of_c20toc21_buff_1 = aie.buffer(%tile_2_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "of_c20toc21_buff_1"} : memref<1024xf32> 
     %of_c20toc21_prod_lock = aie.lock(%tile_2_2, 4) {init = 2 : i32, sym_name = "of_c20toc21_prod_lock"}
     %of_c20toc21_cons_lock = aie.lock(%tile_2_2, 5) {init = 0 : i32, sym_name = "of_c20toc21_cons_lock"}
-    %in7_cons_buff_0 = aie.buffer(%tile_3_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "in7_cons_buff_0"} : memref<1xf32> 
-    %in7_cons_buff_1 = aie.buffer(%tile_3_2) {address = 16388 : i32, mem_bank = 1 : i32, sym_name = "in7_cons_buff_1"} : memref<1xf32> 
+    %in7_cons_buff_0 = aie.buffer(%tile_3_2) {address = 4096 : i32, mem_bank = 0 : i32, sym_name = "in7_cons_buff_0"} : memref<1xf32> 
+    %in7_cons_buff_1 = aie.buffer(%tile_3_2) {address = 20480 : i32, mem_bank = 1 : i32, sym_name = "in7_cons_buff_1"} : memref<1xf32> 
     %in7_cons_prod_lock = aie.lock(%tile_3_2, 2) {init = 2 : i32, sym_name = "in7_cons_prod_lock"}
     %in7_cons_cons_lock = aie.lock(%tile_3_2, 3) {init = 0 : i32, sym_name = "in7_cons_cons_lock"}
-    %in6_cons_buff_0 = aie.buffer(%tile_3_2) {address = 8192 : i32, mem_bank = 0 : i32, sym_name = "in6_cons_buff_0"} : memref<1024xf32> 
-    %in6_cons_buff_1 = aie.buffer(%tile_3_2) {address = 12288 : i32, mem_bank = 0 : i32, sym_name = "in6_cons_buff_1"} : memref<1024xf32> 
+    %in6_cons_buff_0 = aie.buffer(%tile_3_2) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "in6_cons_buff_0"} : memref<1024xf32> 
+    %in6_cons_buff_1 = aie.buffer(%tile_3_2) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "in6_cons_buff_1"} : memref<1024xf32> 
     %in6_cons_prod_lock = aie.lock(%tile_3_2, 0) {init = 2 : i32, sym_name = "in6_cons_prod_lock"}
     %in6_cons_cons_lock = aie.lock(%tile_3_2, 1) {init = 0 : i32, sym_name = "in6_cons_cons_lock"}
-    %in5_cons_buff_0 = aie.buffer(%tile_2_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "in5_cons_buff_0"} : memref<1xf32> 
-    %in5_cons_buff_1 = aie.buffer(%tile_2_2) {address = 16388 : i32, mem_bank = 1 : i32, sym_name = "in5_cons_buff_1"} : memref<1xf32> 
+    %in5_cons_buff_0 = aie.buffer(%tile_2_2) {address = 4096 : i32, mem_bank = 0 : i32, sym_name = "in5_cons_buff_0"} : memref<1xf32> 
+    %in5_cons_buff_1 = aie.buffer(%tile_2_2) {address = 20480 : i32, mem_bank = 1 : i32, sym_name = "in5_cons_buff_1"} : memref<1xf32> 
     %in5_cons_prod_lock = aie.lock(%tile_2_2, 2) {init = 2 : i32, sym_name = "in5_cons_prod_lock"}
     %in5_cons_cons_lock = aie.lock(%tile_2_2, 3) {init = 0 : i32, sym_name = "in5_cons_cons_lock"}
-    %in4_cons_buff_0 = aie.buffer(%tile_2_2) {address = 8192 : i32, mem_bank = 0 : i32, sym_name = "in4_cons_buff_0"} : memref<1024xf32> 
-    %in4_cons_buff_1 = aie.buffer(%tile_2_2) {address = 12288 : i32, mem_bank = 0 : i32, sym_name = "in4_cons_buff_1"} : memref<1024xf32> 
+    %in4_cons_buff_0 = aie.buffer(%tile_2_2) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "in4_cons_buff_0"} : memref<1024xf32> 
+    %in4_cons_buff_1 = aie.buffer(%tile_2_2) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "in4_cons_buff_1"} : memref<1024xf32> 
     %in4_cons_prod_lock = aie.lock(%tile_2_2, 0) {init = 2 : i32, sym_name = "in4_cons_prod_lock"}
     %in4_cons_cons_lock = aie.lock(%tile_2_2, 1) {init = 0 : i32, sym_name = "in4_cons_cons_lock"}
-    %in3_cons_buff_0 = aie.buffer(%tile_1_2) {address = 13312 : i32, mem_bank = 0 : i32, sym_name = "in3_cons_buff_0"} : memref<1xf32> 
-    %in3_cons_buff_1 = aie.buffer(%tile_1_2) {address = 13316 : i32, mem_bank = 0 : i32, sym_name = "in3_cons_buff_1"} : memref<1xf32> 
+    %in3_cons_buff_0 = aie.buffer(%tile_1_2) {address = 5120 : i32, mem_bank = 0 : i32, sym_name = "in3_cons_buff_0"} : memref<1xf32> 
+    %in3_cons_buff_1 = aie.buffer(%tile_1_2) {address = 20480 : i32, mem_bank = 1 : i32, sym_name = "in3_cons_buff_1"} : memref<1xf32> 
     %in3_cons_prod_lock = aie.lock(%tile_1_2, 2) {init = 2 : i32, sym_name = "in3_cons_prod_lock"}
     %in3_cons_cons_lock = aie.lock(%tile_1_2, 3) {init = 0 : i32, sym_name = "in3_cons_cons_lock"}
-    %in2_cons_buff_0 = aie.buffer(%tile_1_2) {address = 9216 : i32, mem_bank = 0 : i32, sym_name = "in2_cons_buff_0"} : memref<1024xf32> 
-    %in2_cons_buff_1 = aie.buffer(%tile_1_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "in2_cons_buff_1"} : memref<1024xf32> 
+    %in2_cons_buff_0 = aie.buffer(%tile_1_2) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "in2_cons_buff_0"} : memref<1024xf32> 
+    %in2_cons_buff_1 = aie.buffer(%tile_1_2) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "in2_cons_buff_1"} : memref<1024xf32> 
     %in2_cons_prod_lock = aie.lock(%tile_1_2, 0) {init = 2 : i32, sym_name = "in2_cons_prod_lock"}
     %in2_cons_cons_lock = aie.lock(%tile_1_2, 1) {init = 0 : i32, sym_name = "in2_cons_cons_lock"}
-    %in1_cons_buff_0 = aie.buffer(%tile_1_3) {address = 9216 : i32, mem_bank = 0 : i32, sym_name = "in1_cons_buff_0"} : memref<1024xf32> 
-    %in1_cons_buff_1 = aie.buffer(%tile_1_3) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "in1_cons_buff_1"} : memref<1024xf32> 
+    %in1_cons_buff_0 = aie.buffer(%tile_1_3) {address = 32768 : i32, mem_bank = 2 : i32, sym_name = "in1_cons_buff_0"} : memref<1024xf32> 
+    %in1_cons_buff_1 = aie.buffer(%tile_1_3) {address = 49152 : i32, mem_bank = 3 : i32, sym_name = "in1_cons_buff_1"} : memref<1024xf32> 
     %in1_cons_prod_lock = aie.lock(%tile_1_3, 0) {init = 2 : i32, sym_name = "in1_cons_prod_lock"}
     %in1_cons_cons_lock = aie.lock(%tile_1_3, 1) {init = 0 : i32, sym_name = "in1_cons_cons_lock"}
     %in0_cons_buff_0 = aie.buffer(%tile_2_4) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "in0_cons_buff_0"} : memref<1xf32> 
-    %in0_cons_buff_1 = aie.buffer(%tile_2_4) {address = 1028 : i32, mem_bank = 0 : i32, sym_name = "in0_cons_buff_1"} : memref<1xf32> 
+    %in0_cons_buff_1 = aie.buffer(%tile_2_4) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "in0_cons_buff_1"} : memref<1xf32> 
     %in0_cons_prod_lock = aie.lock(%tile_2_4, 0) {init = 2 : i32, sym_name = "in0_cons_prod_lock"}
     %in0_cons_cons_lock = aie.lock(%tile_2_4, 1) {init = 0 : i32, sym_name = "in0_cons_cons_lock"}
     aie.flow(%tile_0_0, DMA : 0, %tile_2_4, DMA : 0)
@@ -442,7 +442,6 @@ module {
     ^bb6:  // pred: ^bb1
       aie.end
     } {link_with = "mean.o"}
-    aie.shim_dma_allocation @in0(MM2S, 0, 0)
     memref.global "private" constant @blockwrite_data_0 : memref<8xi32> = dense<[1, 0, 0, 0, -2147483648, 0, 0, 33554432]>
     memref.global "private" constant @blockwrite_data_1 : memref<8xi32> = dense<[9216, 0, 0, 0, -2147483648, 0, 0, 33554432]>
     memref.global "private" constant @blockwrite_data_2 : memref<8xi32> = dense<[9, 0, 0, 0, -2147483648, 0, 0, 33554432]>
@@ -470,7 +469,7 @@ module {
       aiex.npu.write32 {address = 119300 : ui32, column = 1 : i32, row = 0 : i32, value = 2147483648 : ui32}
       aiex.npu.sync {channel = 0 : i32, column = 1 : i32, column_num = 1 : i32, direction = 0 : i32, row = 0 : i32, row_num = 1 : i32}
     }
-    aie.shim_dma_allocation @in1(MM2S, 1, 0)
+    aie.shim_dma_allocation @in0(MM2S, 0, 0)
     %mem_2_4 = aie.mem(%tile_2_4) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -486,7 +485,7 @@ module {
     ^bb3:  // pred: ^bb0
       aie.end
     }
-    aie.shim_dma_allocation @in2(MM2S, 0, 1)
+    aie.shim_dma_allocation @in1(MM2S, 1, 0)
     %mem_1_3 = aie.mem(%tile_1_3) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -514,8 +513,7 @@ module {
     ^bb6:  // pred: ^bb3
       aie.end
     }
-    aie.shim_dma_allocation @in3(MM2S, 1, 1)
-    aie.shim_dma_allocation @in4(MM2S, 0, 2)
+    aie.shim_dma_allocation @in2(MM2S, 0, 1)
     %mem_1_2 = aie.mem(%tile_1_2) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -555,8 +553,8 @@ module {
     ^bb9:  // pred: ^bb6
       aie.end
     }
-    aie.shim_dma_allocation @in5(MM2S, 1, 2)
-    aie.shim_dma_allocation @in6(MM2S, 0, 3)
+    aie.shim_dma_allocation @in3(MM2S, 1, 1)
+    aie.shim_dma_allocation @in4(MM2S, 0, 2)
     %mem_2_2 = aie.mem(%tile_2_2) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -596,7 +594,8 @@ module {
     ^bb9:  // pred: ^bb6
       aie.end
     }
-    aie.shim_dma_allocation @in7(MM2S, 1, 3)
+    aie.shim_dma_allocation @in5(MM2S, 1, 2)
+    aie.shim_dma_allocation @in6(MM2S, 0, 3)
     %mem_3_2 = aie.mem(%tile_3_2) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -624,6 +623,7 @@ module {
     ^bb6:  // pred: ^bb3
       aie.end
     }
+    aie.shim_dma_allocation @in7(MM2S, 1, 3)
     %mem_3_3 = aie.mem(%tile_3_3) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -654,7 +654,6 @@ module {
     ^bb3:  // pred: ^bb0
       aie.end
     }
-    aie.shim_dma_allocation @out(S2MM, 0, 1)
     %mem_0_4 = aie.mem(%tile_0_4) {
       %0 = aie.dma_start(S2MM, 0, ^bb1, ^bb3)
     ^bb1:  // 2 preds: ^bb0, ^bb2
@@ -682,6 +681,7 @@ module {
     ^bb6:  // pred: ^bb3
       aie.end
     }
+    aie.shim_dma_allocation @out(S2MM, 0, 1)
     aie.packet_flow(15) {
       aie.packet_source<%tile_0_0, Ctrl : 0>
       aie.packet_dest<%tile_0_0, South : 0>

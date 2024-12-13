@@ -52,15 +52,11 @@ def main(opts):
     # ------------------------------------------------------
     # I dont know what the kernel.group_id() is for :(
     bo_instr = xrt.bo(device, len(instr_v) * 4, xrt.bo.cacheable, kernel.group_id(1))
-    bo_inout0 = xrt.bo(device, INOUT1_SIZE, xrt.bo.host_only, kernel.group_id(3)) # factor (-2 pi f / SPEED_OF_LIGHT)
-    bo_inout1 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(3)) # vis
-    bo_inout2 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(4)) # u
-    bo_inout3 = xrt.bo(device, INOUT2_SIZE, xrt.bo.host_only, kernel.group_id(4)) # l
-    bo_inout4 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(5)) # v
-    bo_inout5 = xrt.bo(device, INOUT2_SIZE, xrt.bo.host_only, kernel.group_id(5)) # m
-    bo_inout6 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(6)) # w
-    bo_inout7 = xrt.bo(device, INOUT2_SIZE, xrt.bo.host_only, kernel.group_id(6)) # n
-    bo_inout8 = xrt.bo(device, OUT_SIZE, xrt.bo.host_only, kernel.group_id(7))    # output
+    bo_inout0 = xrt.bo(device, INOUT1_SIZE, xrt.bo.host_only, kernel.group_id(3)) # factor (2 pi f / SPEED_OF_LIGHT)
+    bo_inout1 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(4)) # vis
+    bo_inout2 = xrt.bo(device, INOUT0_SIZE, xrt.bo.host_only, kernel.group_id(5)) # baselines (u, v, w)
+    bo_inout3 = xrt.bo(device, INOUT2_SIZE, xrt.bo.host_only, kernel.group_id(6)) # l, m, n
+    bo_inout4 = xrt.bo(device, OUT_SIZE, xrt.bo.host_only, kernel.group_id(7))    # output
 
     # Initialize instruction buffer
     bo_instr.write(instr_v, 0)
@@ -68,22 +64,18 @@ def main(opts):
     # Initialize data buffers
     inout0 = np.array([3], dtype=INOUT1_DATATYPE)                   # factor (-2 pi f / SPEED_OF_LIGHT)            
     inout1 = np.ones(INOUT0_VOLUME, dtype=INOUT2_DATATYPE)          # vis
-    inout2 = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) # u
-    inout3 = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # l
-    inout4 = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) # v
-    inout5 = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # m
-    inout6 = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) # w
-    inout7 = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # n
-    inout8 = np.zeros(OUT_SIZE, dtype=np.uint8)                     # output
+    inout2a = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) # u
+    inout2b = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) # v
+    inout2c = np.arange(1, INOUT0_VOLUME + 1, dtype=INOUT0_DATATYPE) # w
+    inout3a = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # l
+    inout3b = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # m
+    inout3c = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # n
+    inout4 = np.zeros(OUT_SIZE, dtype=np.uint8)                     # output
     bo_inout0.write(inout0, 0)
     bo_inout1.write(inout1, 0)
-    bo_inout2.write(inout2, 0)
-    bo_inout3.write(inout3, 0)
+    bo_inout2.write(inout2a, 0)
+    bo_inout3.write(inout3a, 0)
     bo_inout4.write(inout4, 0)
-    bo_inout5.write(inout5, 0)
-    bo_inout6.write(inout6, 0)
-    bo_inout7.write(inout7, 0)
-    bo_inout8.write(inout8, 0)
 
     # Sync buffers to update input buffer values
     bo_instr.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
@@ -92,10 +84,6 @@ def main(opts):
     bo_inout2.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
     bo_inout3.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
     bo_inout4.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
-    bo_inout5.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
-    bo_inout6.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
-    bo_inout7.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
-    bo_inout8.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_TO_DEVICE)
 
     # ------------------------------------------------------
     # Initialize run configs
@@ -115,17 +103,17 @@ def main(opts):
             print("Running Kernel.")
         start = time.time_ns()
         opcode = 3
-        h = kernel(opcode, bo_instr, len(instr_v), bo_inout0, bo_inout1, bo_inout2, bo_inout3, bo_inout8)
+        h = kernel(opcode, bo_instr, len(instr_v), bo_inout0, bo_inout1, bo_inout2, bo_inout3, bo_inout4) # only 4 inputs and 1 output
         h.wait()
         stop = time.time_ns()
-        bo_inout2.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_FROM_DEVICE)
+        bo_inout4.sync(xrt.xclBOSyncDirection.XCL_BO_SYNC_BO_FROM_DEVICE)
 
         # Warmup iterations do not count towards average runtime.
         if i < opts.warmup_iters:
             continue
 
         # Copy output results and verify they are correct
-        entire_buffer = bo_inout8.read(OUT_SIZE, 0).view(OUT_DATATYPE)
+        entire_buffer = bo_inout4.read(OUT_SIZE, 0).view(OUT_DATATYPE)
         output_buffer = entire_buffer[:INOUT2_VOLUME]
         if opts.verify:
             if opts.verbosity >= 1:
