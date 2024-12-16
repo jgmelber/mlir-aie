@@ -26,7 +26,7 @@ def main(opts):
     # Configure this to match your design's buffer size and type
     # ------------------------------------------------------------
     MSIZE = 9216 # 96x96
-    BSIZE = 1 # 256X256
+    BSIZE = 2 # 256X256
     INOUT0_VOLUME = int(MSIZE)  # Input only, 64x uint32_t in this example
     INOUT1_VOLUME = int(1)  # Input only, 1 uint32_t scale factor
     INOUT2_VOLUME = int(BSIZE)  # Output only, 64x uint32_t in this example
@@ -131,9 +131,9 @@ def main(opts):
         #     if a != b:
         #         errors = errors + 1
         # print(f"errors in iter {i}: {errors}")
-        print("cut")
-        for j in entire_buffer[:9]:
-            print(j)
+        # print("cut")
+        # for j in entire_buffer[:18]:
+        #     print(j)
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)

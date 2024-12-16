@@ -74,6 +74,7 @@ def loafty():
         tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.float32]]
         tile_ty = np.ndarray[(TSIZE,), np.dtype[np.float32]]
         mean_ty = np.ndarray[(9,), np.dtype[np.float32]]
+        mean_ty2 = np.ndarray[(18,), np.dtype[np.float32]]
         scalar_ty = np.ndarray[(1,), np.dtype[np.float32]]
 
         # AIE Core Function declarations
@@ -90,12 +91,6 @@ def loafty():
         # Column 1 (ct[1][0])
         of_in_u = object_fifo("in2", st[1], ct[1][0], 2, tile_ty) # input: u (baselines)
         of_in_l = object_fifo("in3", st[1], ct[1][0], 2, scalar_ty) # input: l (baseline scale)
-        # Column 2 (ct[2][0])
-        of_in_v = object_fifo("in4", st[2], ct[2][0], 2, tile_ty) # input: v (baselines)
-        of_in_m = object_fifo("in5", st[2], ct[2][0], 2, scalar_ty) # input: m (baseline scale)
-        # Column 3 (ct[3][0])
-        of_in_w = object_fifo("in6", st[3], ct[3][0], 2, tile_ty) # input: w (baselines)
-        of_in_n = object_fifo("in7", st[3], ct[3][0], 2, scalar_ty) # input: n (baseline scale)
         
         # Internal movements
         # S1 = add w*n, v*m (ct[3][1])
@@ -115,7 +110,7 @@ def loafty():
         # M1 = mean MU (ct[0][2])
         ofc11toc02 = object_fifo("ofc11toc02", ct[1][1], ct[0][2], 2, tile_ty)
         # M2 = mean M1 (ct[0][1])
-        ofc02toc01 = object_fifo("ofc02toc01", ct[0][2], ct[0][1], 10, scalar_ty)
+        ofc02toc01 = object_fifo("ofc02toc01", ct[0][2], ct[0][1], 2, scalar_ty)
         # M3 = mean M2 (ct[0][0])
         
         # Output
@@ -126,15 +121,16 @@ def loafty():
         def core_body():
             # Effective while(1)
             for _ in range_(sys.maxsize):
-                l = of_in_l.acquire(ObjectFifoPort.Consume, 1) # The one represents an object of size TSIZE
-                # Number of sub-vector "tile" iterations
-                for _ in range_(ITER_M):
-                    u_out = of_c10toc21.acquire(ObjectFifoPort.Produce, 1)
-                    u_in = of_in_u.acquire(ObjectFifoPort.Consume, 1)
-                    kernels['scale_scalar'](u_in, u_out, l, TSIZE)
-                    of_in_u.release(ObjectFifoPort.Consume, 1)
-                    of_c10toc21.release(ObjectFifoPort.Produce, 1)
-                of_in_l.release(ObjectFifoPort.Consume, 1)
+                for _ in range_(2):
+                    l = of_in_l.acquire(ObjectFifoPort.Consume, 1)
+                    # Number of sub-vector "tile" iterations
+                    for _ in range_(ITER_M):
+                        u_out = of_c10toc21.acquire(ObjectFifoPort.Produce, 1)
+                        u_in = of_in_u.acquire(ObjectFifoPort.Consume, 1)
+                        kernels['scale_scalar'](u_in, u_out, l, TSIZE)
+                        of_in_u.release(ObjectFifoPort.Consume, 1)
+                        of_c10toc21.release(ObjectFifoPort.Produce, 1)
+                    of_in_l.release(ObjectFifoPort.Consume, 1)
 
         @core(ct[2][1], "passthrough.o") # should be add
         def core_body():
@@ -195,9 +191,9 @@ def loafty():
             # Effective while(1)
             for _ in range_(sys.maxsize):
                 # Number of sub-vector "tile" iterations
-                for _ in range_(ITER_M):
-                    mean_out = of_out.acquire(ObjectFifoPort.Produce, 1)
-                    mean_in = ofc11toc02.acquire(ObjectFifoPort.Consume, 1)
+                for _ in range_(ITER_M): # 9 times
+                    mean_out = of_out.acquire(ObjectFifoPort.Produce, 1) # object size: 1
+                    mean_in = ofc11toc02.acquire(ObjectFifoPort.Consume, 1) # object size: 1024
                     kernels['mean'](mean_in, mean_out, TSIZE)
                     ofc11toc02.release(ObjectFifoPort.Consume, 1)
                     of_out.release(ObjectFifoPort.Produce, 1)
@@ -220,8 +216,8 @@ def loafty():
             npu_dma_memcpy_nd(metadata=of_in_factor, bd_id=1, mem=factor, sizes=[1, 1, 1, 1]) # input: factor (2 * pi * f / SL)
             npu_dma_memcpy_nd(metadata=of_in_vis, bd_id=2, mem=vis, sizes=[1, 1, 1, MSIZE]) # input: visibilities
             npu_dma_memcpy_nd(metadata=of_in_u, bd_id=3, mem=u, sizes=[1, 1, 1, MSIZE]) # input: u (baselines)
-            npu_dma_memcpy_nd(metadata=of_in_l, bd_id=4, mem=l, sizes=[1, 1, 1, 1]) # input: l (baseline scale)
-            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, 9]) # output
+            npu_dma_memcpy_nd(metadata=of_in_l, bd_id=4, mem=l, sizes=[1, 1, 1, 2]) # input: l (baseline scale)
+            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, 18]) # output
             # We know of_out will complete after of_in and of_in_factor, so it is sufficient to just wait for of_out
             dma_wait(of_out)
 
