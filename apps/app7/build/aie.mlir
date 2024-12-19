@@ -33,16 +33,15 @@ module {
     aie.objectfifo @in1(%tile_0_0, {%tile_1_3}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
     aie.objectfifo @in2(%tile_1_0, {%tile_1_1}, 3 : i32) : !aie.objectfifo<memref<3072xf32>> 
     aie.objectfifo @hh(%tile_1_1, {%tile_2_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
-    aie.objectfifo @kk(%tile_1_1, {%tile_3_2}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
     aie.objectfifo @in3(%tile_1_0, {%tile_1_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
     aie.objectfifo @out(%tile_1_1, {%tile_1_0}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
-    aie.objectfifo.link [@in2] -> [@kk, @out, @hh]([] [0, 1024, 2048])
-    aiex.runtime_sequence(%arg0: memref<1xf32>, %arg1: memref<9216xf32>, %arg2: memref<27648xf32>, %arg3: memref<1xf32>, %arg4: memref<9216xf32>) {
+    aie.objectfifo.link [@in2] -> [@hh, @out]([] [0, 1024])
+    aiex.runtime_sequence(%arg0: memref<1xf32>, %arg1: memref<9216xf32>, %arg2: memref<82944xf32>, %arg3: memref<1xf32>, %arg4: memref<82944xf32>) {
       aiex.npu.dma_memcpy_nd(0, 0, %arg0[0, 0, 0, 0][1, 1, 1, 1][0, 0, 0, 1]) {id = 1 : i64, metadata = @in0} : memref<1xf32>
       aiex.npu.dma_memcpy_nd(0, 0, %arg1[0, 0, 0, 0][1, 1, 1, 9216][0, 0, 0, 1]) {id = 2 : i64, metadata = @in1} : memref<9216xf32>
-      aiex.npu.dma_memcpy_nd(0, 0, %arg2[0, 0, 0, 0][1, 1, 1, 27648][0, 0, 0, 1]) {id = 3 : i64, metadata = @in2} : memref<27648xf32>
+      aiex.npu.dma_memcpy_nd(0, 0, %arg2[0, 0, 0, 0][1, 1, 1, 27648][0, 0, 0, 1]) {id = 3 : i64, metadata = @in2} : memref<82944xf32>
       aiex.npu.dma_memcpy_nd(0, 0, %arg3[0, 0, 0, 0][1, 1, 1, 2][0, 0, 0, 1]) {id = 4 : i64, metadata = @in3} : memref<1xf32>
-      aiex.npu.dma_memcpy_nd(0, 0, %arg4[0, 0, 0, 0][1, 1, 1, 9216][0, 0, 0, 1]) {id = 0 : i64, metadata = @out} : memref<9216xf32>
+      aiex.npu.dma_memcpy_nd(0, 0, %arg4[0, 0, 0, 0][1, 1, 1, 82944][0, 0, 0, 1]) {id = 0 : i64, metadata = @out} : memref<82944xf32>
       aiex.npu.dma_wait {symbol = @out}
     }
   }

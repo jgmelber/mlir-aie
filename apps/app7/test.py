@@ -74,9 +74,6 @@ def main(opts):
     inout2[0::3, :] = inout2a.reshape(9, ISIZE)
     inout2[1::3, :] = inout2b.reshape(9, ISIZE)
     inout2[2::3, :] = inout2c.reshape(9, ISIZE)
-    print("Complete input: ")
-    for x in inout2:
-        print(x)
     
     
     inout3a = np.ones(INOUT2_VOLUME, dtype=INOUT2_DATATYPE)          # l
@@ -132,8 +129,8 @@ def main(opts):
             continue
 
         # Copy output results and verify they are correct
-        entire_buffer = bo_inout4.read(OUT_SIZE, 0).view(OUT_DATATYPE)
-        output_buffer = entire_buffer[:OUT_SIZE]
+        entire_buffer = bo_inout4.read(OUT_SIZE*3, 0).view(OUT_DATATYPE)
+        output_buffer = entire_buffer[:OUT_SIZE*3]
         if opts.verify:
             if opts.verbosity >= 1:
                 print("Verifying results ...")
@@ -150,8 +147,8 @@ def main(opts):
         #     if a != b:
         #         errors = errors + 1
         # print(f"errors in iter {i}: {errors}")
-        print("\nOutput from direct input:")
-        output_buffer = output_buffer.reshape(9, 1024)
+        print(f"cut{i}")
+        output_buffer = output_buffer.reshape(9*3, 1024)
         for x in output_buffer:
             print(x)
         print(output_buffer.size)

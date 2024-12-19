@@ -73,7 +73,7 @@ def loafty():
     @device(AIEDevice.npu1_4col)
     def device_body():
         tensor_ty = np.ndarray[(MSIZE,), np.dtype[np.float32]]
-        tensor_ty3 = np.ndarray[(BSIZE,), np.dtype[np.float32]]
+        tensor_ty3 = np.ndarray[(BSIZE*3,), np.dtype[np.float32]]
         tile_ty = np.ndarray[(TSIZE,), np.dtype[np.float32]]
         tile_ty3 = np.ndarray[(TSIZE*3,), np.dtype[np.float32]]
         mean_ty = np.ndarray[(9,), np.dtype[np.float32]]
@@ -96,7 +96,7 @@ def loafty():
         # Distributing baselines
         # of_gg = object_fifo("gg", mt[1], ct[1][0], 2, tile_ty)
         of_hh = object_fifo("hh", mt[1], ct[2][0], 2, tile_ty)
-        of_kk = object_fifo("kk", mt[1], ct[3][0], 2, tile_ty)
+        # of_kk = object_fifo("kk", mt[1], ct[3][0], 2, tile_ty)
         # object_fifo_link(of_in_baselines, [of_gg, of_hh, of_kk], [], [0, TSIZE, TSIZE*2])
         of_in_l = object_fifo("in3", st[1], ct[1][0], 2, scalar_ty) # input: l (baseline scale)
         
@@ -124,7 +124,7 @@ def loafty():
         # Output
         of_out = object_fifo("out", mt[1], st[1], 2, tile_ty)
         # object_fifo_link(of_in_baselines, [of_out], [], [0])
-        object_fifo_link(of_in_baselines, [of_kk, of_out, of_hh], [], [0, TSIZE, TSIZE*2])
+        object_fifo_link(of_in_baselines, [of_hh, of_out], [], [0, 1024])
 
         # Set up compute tiles        
         # @core(ct[1][0], "scale.o") # This is scale of u with l
@@ -220,13 +220,13 @@ def loafty():
         #             of_out.release(ObjectFifoPort.Produce, 1)
 
         # To/from AIE-array data movement
-        @runtime_sequence(scalar_ty, tensor_ty, tensor_ty3, scalar_ty, tensor_ty)
+        @runtime_sequence(scalar_ty, tensor_ty, tensor_ty3, scalar_ty, tensor_ty3)
         def sequence(factor, vis, u, l, output):
             npu_dma_memcpy_nd(metadata=of_in_factor, bd_id=1, mem=factor, sizes=[1, 1, 1, 1]) # input: factor (2 * pi * f / SL)
             npu_dma_memcpy_nd(metadata=of_in_vis, bd_id=2, mem=vis, sizes=[1, 1, 1, MSIZE]) # input: visibilities
             npu_dma_memcpy_nd(metadata=of_in_baselines, bd_id=3, mem=u, sizes=[1, 1, 1, BSIZE]) # input: u (baselines)
             npu_dma_memcpy_nd(metadata=of_in_l, bd_id=4, mem=l, sizes=[1, 1, 1, 2]) # input: l (baseline scale)
-            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, MSIZE]) # output
+            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, MSIZE*9]) # output
             # We know of_out will complete after of_in and of_in_factor, so it is sufficient to just wait for of_out
             dma_wait(of_out)
 
