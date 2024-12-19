@@ -150,11 +150,13 @@ def main(opts):
         #     if a != b:
         #         errors = errors + 1
         # print(f"errors in iter {i}: {errors}")
-        print("\nOutput from direct input:")
+        print("\nOutput from distributed input 1/3:")
         output_buffer = output_buffer.reshape(9, 1024)
         for x in output_buffer:
             print(x)
-        print(output_buffer.size)
+        print("\nExpected output from distributed input 1/3")
+        for x in inout2a.reshape(9, 1024):
+            print(x)
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)
