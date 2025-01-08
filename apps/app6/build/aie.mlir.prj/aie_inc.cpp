@@ -86,6 +86,12 @@ __mlir_aie_try(XAie_CoreReset(&(ctx->DevInst), XAie_TileLoc(2,2)));
 __mlir_aie_try(XAie_CoreDisable(&(ctx->DevInst), XAie_TileLoc(2,2)));
 for (int l = 0; l < 16; ++l)
   __mlir_aie_try(XAie_LockRelease(&(ctx->DevInst), XAie_TileLoc(2,2), XAie_LockInit(l, 0x0), 0));
+{
+AieRC RC = XAie_LoadElf(&(ctx->DevInst), XAie_TileLoc(2,2), (const char*)"core_2_2.elf",0);
+if (RC != XAIE_OK)
+    __mlir_aie_verbose(fprintf(stderr, "Failed to load elf for Core[%d,%d], ret is %d\n", 2, 2, RC));
+assert(RC == XAIE_OK);
+}
 __mlir_aie_try(XAie_CoreReset(&(ctx->DevInst), XAie_TileLoc(2,3)));
 __mlir_aie_try(XAie_CoreDisable(&(ctx->DevInst), XAie_TileLoc(2,3)));
 for (int l = 0; l < 16; ++l)
@@ -102,6 +108,12 @@ __mlir_aie_try(XAie_CoreReset(&(ctx->DevInst), XAie_TileLoc(3,2)));
 __mlir_aie_try(XAie_CoreDisable(&(ctx->DevInst), XAie_TileLoc(3,2)));
 for (int l = 0; l < 16; ++l)
   __mlir_aie_try(XAie_LockRelease(&(ctx->DevInst), XAie_TileLoc(3,2), XAie_LockInit(l, 0x0), 0));
+{
+AieRC RC = XAie_LoadElf(&(ctx->DevInst), XAie_TileLoc(3,2), (const char*)"core_3_2.elf",0);
+if (RC != XAIE_OK)
+    __mlir_aie_verbose(fprintf(stderr, "Failed to load elf for Core[%d,%d], ret is %d\n", 3, 2, RC));
+assert(RC == XAIE_OK);
+}
 __mlir_aie_try(XAie_CoreReset(&(ctx->DevInst), XAie_TileLoc(3,3)));
 __mlir_aie_try(XAie_CoreDisable(&(ctx->DevInst), XAie_TileLoc(3,3)));
 for (int l = 0; l < 16; ++l)
@@ -189,7 +201,7 @@ __mlir_aie_try(XAie_DmaChannelEnable(&(ctx->DevInst), XAie_TileLoc(1,3), /* ChNu
 XAie_DmaDesc dma_tile22_bd0;
 __mlir_aie_try(XAie_DmaDescInit(&(ctx->DevInst), &(dma_tile22_bd0), XAie_TileLoc(2,2)));
 __mlir_aie_try(XAie_DmaSetLock(&(dma_tile22_bd0), XAie_LockInit(0,-1),XAie_LockInit(1,1)));
-__mlir_aie_try(XAie_DmaSetAddrLen(&(dma_tile22_bd0), /* addrA */ 0x0,  /* len */ 4096));
+__mlir_aie_try(XAie_DmaSetAddrLen(&(dma_tile22_bd0), /* addrA */ 0x400,  /* len */ 4096));
 __mlir_aie_try(XAie_DmaSetNextBd(&(dma_tile22_bd0),  /* nextbd */ 1,  /* enableNextBd */ 1));
 __mlir_aie_try(XAie_DmaEnableBd(&(dma_tile22_bd0)));
 __mlir_aie_try(XAie_DmaWriteBd(&(ctx->DevInst), &(dma_tile22_bd0), XAie_TileLoc(2,2),  /* bd */ 0));
@@ -205,7 +217,7 @@ __mlir_aie_try(XAie_DmaChannelEnable(&(ctx->DevInst), XAie_TileLoc(2,2), /* ChNu
 XAie_DmaDesc dma_tile32_bd0;
 __mlir_aie_try(XAie_DmaDescInit(&(ctx->DevInst), &(dma_tile32_bd0), XAie_TileLoc(3,2)));
 __mlir_aie_try(XAie_DmaSetLock(&(dma_tile32_bd0), XAie_LockInit(0,-1),XAie_LockInit(1,1)));
-__mlir_aie_try(XAie_DmaSetAddrLen(&(dma_tile32_bd0), /* addrA */ 0x0,  /* len */ 4096));
+__mlir_aie_try(XAie_DmaSetAddrLen(&(dma_tile32_bd0), /* addrA */ 0x400,  /* len */ 4096));
 __mlir_aie_try(XAie_DmaSetNextBd(&(dma_tile32_bd0),  /* nextbd */ 1,  /* enableNextBd */ 1));
 __mlir_aie_try(XAie_DmaEnableBd(&(dma_tile32_bd0)));
 __mlir_aie_try(XAie_DmaWriteBd(&(ctx->DevInst), &(dma_tile32_bd0), XAie_TileLoc(3,2),  /* bd */ 0));
@@ -509,7 +521,7 @@ int mlir_aie_write_buffer_in1_cons_buff_1(aie_libxaie_ctx_t* ctx, int index, flo
 AieRC rc =    XAie_DataMemWrWord(&(ctx->DevInst), XAie_TileLoc(1,3), in1_cons_buff_1_offset + (index*4), int_value);
 return rc;
 }
-const int hh_cons_buff_0_offset = 0;
+const int hh_cons_buff_0_offset = 1024;
 float mlir_aie_read_buffer_hh_cons_buff_0(aie_libxaie_ctx_t* ctx, int index) {
 u32 value; auto rc = XAie_DataMemRdWord(&(ctx->DevInst), XAie_TileLoc(2,2), hh_cons_buff_0_offset + (index*4), &value);
   union caster { int32_t i; float f; };
@@ -565,7 +577,7 @@ int mlir_aie_write_buffer_in3_cons_buff_1(aie_libxaie_ctx_t* ctx, int index, flo
 AieRC rc =    XAie_DataMemWrWord(&(ctx->DevInst), XAie_TileLoc(1,2), in3_cons_buff_1_offset + (index*4), int_value);
 return rc;
 }
-const int kk_cons_buff_0_offset = 0;
+const int kk_cons_buff_0_offset = 1024;
 float mlir_aie_read_buffer_kk_cons_buff_0(aie_libxaie_ctx_t* ctx, int index) {
 u32 value; auto rc = XAie_DataMemRdWord(&(ctx->DevInst), XAie_TileLoc(3,2), kk_cons_buff_0_offset + (index*4), &value);
   union caster { int32_t i; float f; };

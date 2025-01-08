@@ -51,11 +51,11 @@ module {
     %in3_cons_cons_lock = aie.lock(%tile_1_2, 1) {init = 0 : i32, sym_name = "in3_cons_cons_lock"}
     %in3_prod_lock = aie.lock(%tile_1_0, 2) {init = 1 : i32, sym_name = "in3_prod_lock"}
     %in3_cons_lock = aie.lock(%tile_1_0, 3) {init = 0 : i32, sym_name = "in3_cons_lock"}
-    %kk_cons_buff_0 = aie.buffer(%tile_3_2) {address = 0 : i32, mem_bank = 0 : i32, sym_name = "kk_cons_buff_0"} : memref<1024xf32> 
+    %kk_cons_buff_0 = aie.buffer(%tile_3_2) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "kk_cons_buff_0"} : memref<1024xf32> 
     %kk_cons_buff_1 = aie.buffer(%tile_3_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "kk_cons_buff_1"} : memref<1024xf32> 
     %kk_cons_prod_lock = aie.lock(%tile_3_2, 0) {init = 2 : i32, sym_name = "kk_cons_prod_lock"}
     %kk_cons_cons_lock = aie.lock(%tile_3_2, 1) {init = 0 : i32, sym_name = "kk_cons_cons_lock"}
-    %hh_cons_buff_0 = aie.buffer(%tile_2_2) {address = 0 : i32, mem_bank = 0 : i32, sym_name = "hh_cons_buff_0"} : memref<1024xf32> 
+    %hh_cons_buff_0 = aie.buffer(%tile_2_2) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "hh_cons_buff_0"} : memref<1024xf32> 
     %hh_cons_buff_1 = aie.buffer(%tile_2_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "hh_cons_buff_1"} : memref<1024xf32> 
     %hh_cons_prod_lock = aie.lock(%tile_2_2, 0) {init = 2 : i32, sym_name = "hh_cons_prod_lock"}
     %hh_cons_cons_lock = aie.lock(%tile_2_2, 1) {init = 0 : i32, sym_name = "hh_cons_cons_lock"}
@@ -85,6 +85,50 @@ module {
     aie.flow(%tile_1_1, DMA : 1, %tile_3_2, DMA : 0)
     aie.flow(%tile_1_0, DMA : 1, %tile_1_2, DMA : 0)
     aie.flow(%tile_1_1, DMA : 2, %tile_1_0, DMA : 0)
+    %core_2_2 = aie.core(%tile_2_2) {
+      %c0 = arith.constant 0 : index
+      %c9223372036854775807 = arith.constant 9223372036854775807 : index
+      %c1 = arith.constant 1 : index
+      %c9223372036854775806 = arith.constant 9223372036854775806 : index
+      %c2 = arith.constant 2 : index
+      cf.br ^bb1(%c0 : index)
+    ^bb1(%0: index):  // 2 preds: ^bb0, ^bb2
+      %1 = arith.cmpi slt, %0, %c9223372036854775806 : index
+      cf.cond_br %1, ^bb2, ^bb3
+    ^bb2:  // pred: ^bb1
+      aie.use_lock(%hh_cons_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%hh_cons_prod_lock, Release, 1)
+      aie.use_lock(%hh_cons_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%hh_cons_prod_lock, Release, 1)
+      %2 = arith.addi %0, %c2 : index
+      cf.br ^bb1(%2 : index)
+    ^bb3:  // pred: ^bb1
+      aie.use_lock(%hh_cons_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%hh_cons_prod_lock, Release, 1)
+      aie.end
+    }
+    %core_3_2 = aie.core(%tile_3_2) {
+      %c0 = arith.constant 0 : index
+      %c9223372036854775807 = arith.constant 9223372036854775807 : index
+      %c1 = arith.constant 1 : index
+      %c9223372036854775806 = arith.constant 9223372036854775806 : index
+      %c2 = arith.constant 2 : index
+      cf.br ^bb1(%c0 : index)
+    ^bb1(%0: index):  // 2 preds: ^bb0, ^bb2
+      %1 = arith.cmpi slt, %0, %c9223372036854775806 : index
+      cf.cond_br %1, ^bb2, ^bb3
+    ^bb2:  // pred: ^bb1
+      aie.use_lock(%kk_cons_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%kk_cons_prod_lock, Release, 1)
+      aie.use_lock(%kk_cons_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%kk_cons_prod_lock, Release, 1)
+      %2 = arith.addi %0, %c2 : index
+      cf.br ^bb1(%2 : index)
+    ^bb3:  // pred: ^bb1
+      aie.use_lock(%kk_cons_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%kk_cons_prod_lock, Release, 1)
+      aie.end
+    }
     aiex.runtime_sequence(%arg0: memref<1xf32>, %arg1: memref<9216xf32>, %arg2: memref<27648xf32>, %arg3: memref<1xf32>, %arg4: memref<9216xf32>) {
       aiex.npu.dma_memcpy_nd(0, 0, %arg0[0, 0, 0, 0][1, 1, 1, 1][0, 0, 0, 1]) {id = 1 : i64, metadata = @in0} : memref<1xf32>
       aiex.npu.dma_memcpy_nd(0, 0, %arg1[0, 0, 0, 0][1, 1, 1, 9216][0, 0, 0, 1]) {id = 2 : i64, metadata = @in1} : memref<9216xf32>

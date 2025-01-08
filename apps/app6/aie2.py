@@ -126,6 +126,20 @@ def loafty():
         # object_fifo_link(of_in_baselines, [of_out], [], [0])
         object_fifo_link(of_in_baselines, [of_kk, of_out, of_hh], [], [0, TSIZE, TSIZE*2])
 
+        @core(ct[2][0])
+        def core_body():
+            # Effective while(1)
+            for _ in range_(ITER_KERNEL):
+                of_hh.acquire(ObjectFifoPort.Consume, 1)
+                of_hh.release(ObjectFifoPort.Consume, 1)
+
+        @core(ct[3][0])
+        def core_body():
+            # Effective while(1)
+            for _ in range_(ITER_KERNEL):
+                of_kk.acquire(ObjectFifoPort.Consume, 1)
+                of_kk.release(ObjectFifoPort.Consume, 1)
+
         # Set up compute tiles        
         # @core(ct[1][0], "scale.o") # This is scale of u with l
         # def core_body():

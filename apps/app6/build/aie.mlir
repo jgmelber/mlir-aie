@@ -37,6 +37,28 @@ module {
     aie.objectfifo @in3(%tile_1_0, {%tile_1_2}, 2 : i32) : !aie.objectfifo<memref<1xf32>> 
     aie.objectfifo @out(%tile_1_1, {%tile_1_0}, 2 : i32) : !aie.objectfifo<memref<1024xf32>> 
     aie.objectfifo.link [@in2] -> [@kk, @out, @hh]([] [0, 1024, 2048])
+    %core_2_2 = aie.core(%tile_2_2) {
+      %c0 = arith.constant 0 : index
+      %c9223372036854775807 = arith.constant 9223372036854775807 : index
+      %c1 = arith.constant 1 : index
+      scf.for %arg0 = %c0 to %c9223372036854775807 step %c1 {
+        %0 = aie.objectfifo.acquire @hh(Consume, 1) : !aie.objectfifosubview<memref<1024xf32>>
+        %1 = aie.objectfifo.subview.access %0[0] : !aie.objectfifosubview<memref<1024xf32>> -> memref<1024xf32>
+        aie.objectfifo.release @hh(Consume, 1)
+      }
+      aie.end
+    }
+    %core_3_2 = aie.core(%tile_3_2) {
+      %c0 = arith.constant 0 : index
+      %c9223372036854775807 = arith.constant 9223372036854775807 : index
+      %c1 = arith.constant 1 : index
+      scf.for %arg0 = %c0 to %c9223372036854775807 step %c1 {
+        %0 = aie.objectfifo.acquire @kk(Consume, 1) : !aie.objectfifosubview<memref<1024xf32>>
+        %1 = aie.objectfifo.subview.access %0[0] : !aie.objectfifosubview<memref<1024xf32>> -> memref<1024xf32>
+        aie.objectfifo.release @kk(Consume, 1)
+      }
+      aie.end
+    }
     aiex.runtime_sequence(%arg0: memref<1xf32>, %arg1: memref<9216xf32>, %arg2: memref<27648xf32>, %arg3: memref<1xf32>, %arg4: memref<9216xf32>) {
       aiex.npu.dma_memcpy_nd(0, 0, %arg0[0, 0, 0, 0][1, 1, 1, 1][0, 0, 0, 1]) {id = 1 : i64, metadata = @in0} : memref<1xf32>
       aiex.npu.dma_memcpy_nd(0, 0, %arg1[0, 0, 0, 0][1, 1, 1, 9216][0, 0, 0, 1]) {id = 2 : i64, metadata = @in1} : memref<9216xf32>
