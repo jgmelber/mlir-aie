@@ -198,18 +198,18 @@ def loafty():
                     ofc11toc02.release(ObjectFifoPort.Consume, 1)
                     ofc02toc01.release(ObjectFifoPort.Produce, 1)
 
-        # @core(ct[0][1], "passthrough.o") 
-        # def core_body():
-        #     # Effective while(1)
-        #     for _ in range_(sys.maxsize):
-        #         for _ in range_(ITER_M):
-        #             # Number of sub-vector "tile" iterations
-        #             mean_out = of_out.acquire(ObjectFifoPort.Produce, 1) # size 1/9
-        #             mean_in = ofc02toc01.acquire(ObjectFifoPort.Consume, 1) # size 1/9
-        #             for i in range_(1):
-        #                 mean_out[i] = mean_in[i]
-        #             ofc02toc01.release(ObjectFifoPort.Consume, 1)
-        #             of_out.release(ObjectFifoPort.Produce, 1)
+        @core(ct[0][1], "passthrough.o") 
+        def core_body():
+            # Effective while(1)
+            for _ in range_(sys.maxsize):
+                for _ in range_(ITER_M):
+                    # Number of sub-vector "tile" iterations
+                    mean_out = of_out.acquire(ObjectFifoPort.Produce, 1) # size 1/9
+                    mean_in = ofc02toc01.acquire(ObjectFifoPort.Consume, 1) # size 1/9
+                    for i in range_(1):
+                        mean_out[i] = mean_in[i]
+                    ofc02toc01.release(ObjectFifoPort.Consume, 1)
+                    of_out.release(ObjectFifoPort.Produce, 1)
 
         # To/from AIE-array data movement
         @runtime_sequence(scalar_ty, tensor_ty, tensor_ty, scalar_ty, mean_ty)
