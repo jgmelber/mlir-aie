@@ -80,6 +80,12 @@ __mlir_aie_try(XAie_CoreReset(&(ctx->DevInst), XAie_TileLoc(1,3)));
 __mlir_aie_try(XAie_CoreDisable(&(ctx->DevInst), XAie_TileLoc(1,3)));
 for (int l = 0; l < 16; ++l)
   __mlir_aie_try(XAie_LockRelease(&(ctx->DevInst), XAie_TileLoc(1,3), XAie_LockInit(l, 0x0), 0));
+{
+AieRC RC = XAie_LoadElf(&(ctx->DevInst), XAie_TileLoc(1,3), (const char*)"core_1_3.elf",0);
+if (RC != XAIE_OK)
+    __mlir_aie_verbose(fprintf(stderr, "Failed to load elf for Core[%d,%d], ret is %d\n", 1, 3, RC));
+assert(RC == XAIE_OK);
+}
 __mlir_aie_try(XAie_CoreReset(&(ctx->DevInst), XAie_TileLoc(1,4)));
 __mlir_aie_try(XAie_CoreDisable(&(ctx->DevInst), XAie_TileLoc(1,4)));
 for (int l = 0; l < 16; ++l)
@@ -663,7 +669,7 @@ int mlir_aie_write_buffer_in0_cons_buff_1(aie_libxaie_ctx_t* ctx, int index, flo
 AieRC rc =    XAie_DataMemWrWord(&(ctx->DevInst), XAie_TileLoc(2,4), in0_cons_buff_1_offset + (index*4), int_value);
 return rc;
 }
-const int addB1_buff_0_offset = 0;
+const int addB1_buff_0_offset = 1024;
 float mlir_aie_read_buffer_addB1_buff_0(aie_libxaie_ctx_t* ctx, int index) {
 u32 value; auto rc = XAie_DataMemRdWord(&(ctx->DevInst), XAie_TileLoc(1,3), addB1_buff_0_offset + (index*4), &value);
   union caster { int32_t i; float f; };

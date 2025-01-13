@@ -68,6 +68,83 @@ module attributes {llvm.target_triple = "aie2"} {
   llvm.func @vector_add_aie_scalar(!llvm.ptr, !llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
   llvm.func @vector_mult_aie_scalar(!llvm.ptr, !llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
   llvm.func @mean(!llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
+  llvm.func @core_1_3() {
+    %0 = llvm.mlir.constant(50 : i32) : i32
+    %1 = llvm.mlir.constant(4 : i32) : i32
+    %2 = llvm.mlir.constant(51 : i32) : i32
+    %3 = llvm.mlir.constant(5 : i32) : i32
+    %4 = llvm.mlir.constant(1 : i32) : i32
+    %5 = llvm.mlir.constant(-1 : i32) : i32
+    %6 = llvm.mlir.constant(9223372036854775806 : index) : i64
+    %7 = llvm.mlir.constant(2 : index) : i64
+    %8 = llvm.mlir.constant(0 : index) : i64
+    %9 = llvm.mlir.constant(8 : index) : i64
+    llvm.br ^bb1(%8 : i64)
+  ^bb1(%10: i64):  // 2 preds: ^bb0, ^bb7
+    %11 = llvm.icmp "slt" %10, %9 : i64
+    llvm.cond_br %11, ^bb2(%8 : i64), ^bb8(%8 : i64)
+  ^bb2(%12: i64):  // 2 preds: ^bb1, ^bb3
+    %13 = llvm.icmp "slt" %12, %6 : i64
+    llvm.cond_br %13, ^bb3, ^bb4
+  ^bb3:  // pred: ^bb2
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    %14 = llvm.add %12, %7 : i64
+    llvm.br ^bb2(%14 : i64)
+  ^bb4:  // pred: ^bb2
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    llvm.br ^bb5(%8 : i64)
+  ^bb5(%15: i64):  // 2 preds: ^bb4, ^bb6
+    %16 = llvm.icmp "slt" %15, %6 : i64
+    llvm.cond_br %16, ^bb6, ^bb7
+  ^bb6:  // pred: ^bb5
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    %17 = llvm.add %15, %7 : i64
+    llvm.br ^bb5(%17 : i64)
+  ^bb7:  // pred: ^bb5
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    %18 = llvm.add %10, %7 : i64
+    llvm.br ^bb1(%18 : i64)
+  ^bb8(%19: i64):  // 2 preds: ^bb1, ^bb9
+    %20 = llvm.icmp "slt" %19, %6 : i64
+    llvm.cond_br %20, ^bb9, ^bb10
+  ^bb9:  // pred: ^bb8
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    %21 = llvm.add %19, %7 : i64
+    llvm.br ^bb8(%21 : i64)
+  ^bb10:  // pred: ^bb8
+    llvm.call @llvm.aie2.acquire(%3, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%2, %5) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%1, %4) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%0, %4) : (i32, i32) -> ()
+    llvm.return
+  }
   llvm.func @core_2_3() {
     %0 = llvm.mlir.constant(48 : i32) : i32
     %1 = llvm.mlir.constant(4 : i32) : i32

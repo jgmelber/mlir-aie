@@ -114,7 +114,7 @@ def loafty():
         # M3 = mean M2 (ct[0][0])
         
         # Output
-        of_out = object_fifo("out", ct[0][2], st[1], 2, scalar_ty)
+        of_out = object_fifo("out", ct[0][1], st[1], 2, scalar_ty)
 
         # Set up compute tiles        
         @core(ct[1][0], "scale.o") # This is scale of u with l
@@ -192,21 +192,22 @@ def loafty():
             for _ in range_(sys.maxsize):
                 # Number of sub-vector "tile" iterations
                 for _ in range_(ITER_M): # 9 times
-                    mean_out = of_out.acquire(ObjectFifoPort.Produce, 1) # object size: 1
+                    mean_out = ofc02toc01.acquire(ObjectFifoPort.Produce, 1) # object size: 1
                     mean_in = ofc11toc02.acquire(ObjectFifoPort.Consume, 1) # object size: 1024
                     kernels['mean'](mean_in, mean_out, TSIZE)
                     ofc11toc02.release(ObjectFifoPort.Consume, 1)
-                    of_out.release(ObjectFifoPort.Produce, 1)
+                    ofc02toc01.release(ObjectFifoPort.Produce, 1)
 
         # @core(ct[0][1], "passthrough.o") 
         # def core_body():
         #     # Effective while(1)
         #     for _ in range_(sys.maxsize):
-        #         for _ in range_(9):
+        #         for _ in range_(ITER_M):
         #             # Number of sub-vector "tile" iterations
         #             mean_out = of_out.acquire(ObjectFifoPort.Produce, 1) # size 1/9
         #             mean_in = ofc02toc01.acquire(ObjectFifoPort.Consume, 1) # size 1/9
-        #             kernels['passthrough'](mean_in, mean_out, 1)
+        #             for i in range_(1):
+        #                 mean_out[i] = mean_in[i]
         #             ofc02toc01.release(ObjectFifoPort.Consume, 1)
         #             of_out.release(ObjectFifoPort.Produce, 1)
 
@@ -217,7 +218,7 @@ def loafty():
             npu_dma_memcpy_nd(metadata=of_in_vis, bd_id=2, mem=vis, sizes=[1, 1, 1, MSIZE]) # input: visibilities
             npu_dma_memcpy_nd(metadata=of_in_u, bd_id=3, mem=u, sizes=[1, 1, 1, MSIZE]) # input: u (baselines)
             npu_dma_memcpy_nd(metadata=of_in_l, bd_id=4, mem=l, sizes=[1, 1, 1, 2]) # input: l (baseline scale)
-            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, 18]) # output
+            npu_dma_memcpy_nd(metadata=of_out, bd_id=0, mem=output, sizes=[1, 1, 1, 9]) # output
             # We know of_out will complete after of_in and of_in_factor, so it is sufficient to just wait for of_out
             dma_wait(of_out)
 

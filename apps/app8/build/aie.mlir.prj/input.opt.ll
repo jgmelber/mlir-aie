@@ -31,6 +31,543 @@ declare void @llvm.aie2.release(i32, i32) #0
 declare void @vector_scalar_mul_aie_scalar(ptr, ptr, ptr, i32) local_unnamed_addr
 
 ; Function Attrs: nounwind
+define void @core_1_3() local_unnamed_addr #0 {
+.preheader5:
+  br label %0
+
+0:                                                ; preds = %0, %.preheader5
+  %niter = phi i64 [ 0, %.preheader5 ], [ %niter.next.3, %0 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter.next.3 = add nuw nsw i64 %niter, 4
+  %niter.ncmp.3 = icmp eq i64 %niter.next.3, 4611686018427387900
+  br i1 %niter.ncmp.3, label %.epil.preheader, label %0
+
+.epil.preheader:                                  ; preds = %0, %.epil.preheader
+  %epil.iter = phi i64 [ %epil.iter.next, %.epil.preheader ], [ 0, %0 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter.next = add i64 %epil.iter, 1
+  %epil.iter.cmp.not = icmp eq i64 %epil.iter.next, 3
+  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !1
+
+.epilog-lcssa:                                    ; preds = %.epil.preheader
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %1
+
+1:                                                ; preds = %1, %.epilog-lcssa
+  %niter12 = phi i64 [ 0, %.epilog-lcssa ], [ %niter12.next.3, %1 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter12.next.3 = add nuw nsw i64 %niter12, 4
+  %niter12.ncmp.3 = icmp eq i64 %niter12.next.3, 4611686018427387900
+  br i1 %niter12.ncmp.3, label %.epil.preheader9, label %1
+
+.epil.preheader9:                                 ; preds = %1, %.epil.preheader9
+  %epil.iter10 = phi i64 [ %epil.iter10.next, %.epil.preheader9 ], [ 0, %1 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter10.next = add i64 %epil.iter10, 1
+  %epil.iter10.cmp.not = icmp eq i64 %epil.iter10.next, 3
+  br i1 %epil.iter10.cmp.not, label %.preheader5.1, label %.epil.preheader9, !llvm.loop !3
+
+.preheader5.1:                                    ; preds = %.epil.preheader9
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %2
+
+2:                                                ; preds = %2, %.preheader5.1
+  %niter21 = phi i64 [ 0, %.preheader5.1 ], [ %niter21.next.3, %2 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter21.next.3 = add nuw nsw i64 %niter21, 4
+  %niter21.ncmp.3 = icmp eq i64 %niter21.next.3, 4611686018427387900
+  br i1 %niter21.ncmp.3, label %.epil.preheader17, label %2
+
+.epil.preheader17:                                ; preds = %2, %.epil.preheader17
+  %epil.iter18 = phi i64 [ %epil.iter18.next, %.epil.preheader17 ], [ 0, %2 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter18.next = add i64 %epil.iter18, 1
+  %epil.iter18.cmp.not = icmp eq i64 %epil.iter18.next, 3
+  br i1 %epil.iter18.cmp.not, label %.epilog-lcssa20, label %.epil.preheader17, !llvm.loop !4
+
+.epilog-lcssa20:                                  ; preds = %.epil.preheader17
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %3
+
+3:                                                ; preds = %3, %.epilog-lcssa20
+  %niter26 = phi i64 [ 0, %.epilog-lcssa20 ], [ %niter26.next.3, %3 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter26.next.3 = add nuw nsw i64 %niter26, 4
+  %niter26.ncmp.3 = icmp eq i64 %niter26.next.3, 4611686018427387900
+  br i1 %niter26.ncmp.3, label %.epil.preheader23, label %3
+
+.epil.preheader23:                                ; preds = %3, %.epil.preheader23
+  %epil.iter24 = phi i64 [ %epil.iter24.next, %.epil.preheader23 ], [ 0, %3 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter24.next = add i64 %epil.iter24, 1
+  %epil.iter24.cmp.not = icmp eq i64 %epil.iter24.next, 3
+  br i1 %epil.iter24.cmp.not, label %.preheader5.2, label %.epil.preheader23, !llvm.loop !5
+
+.preheader5.2:                                    ; preds = %.epil.preheader23
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %4
+
+4:                                                ; preds = %4, %.preheader5.2
+  %niter32 = phi i64 [ 0, %.preheader5.2 ], [ %niter32.next.3, %4 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter32.next.3 = add nuw nsw i64 %niter32, 4
+  %niter32.ncmp.3 = icmp eq i64 %niter32.next.3, 4611686018427387900
+  br i1 %niter32.ncmp.3, label %.epil.preheader28, label %4
+
+.epil.preheader28:                                ; preds = %4, %.epil.preheader28
+  %epil.iter29 = phi i64 [ %epil.iter29.next, %.epil.preheader28 ], [ 0, %4 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter29.next = add i64 %epil.iter29, 1
+  %epil.iter29.cmp.not = icmp eq i64 %epil.iter29.next, 3
+  br i1 %epil.iter29.cmp.not, label %.epilog-lcssa31, label %.epil.preheader28, !llvm.loop !6
+
+.epilog-lcssa31:                                  ; preds = %.epil.preheader28
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %5
+
+5:                                                ; preds = %5, %.epilog-lcssa31
+  %niter37 = phi i64 [ 0, %.epilog-lcssa31 ], [ %niter37.next.3, %5 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter37.next.3 = add nuw nsw i64 %niter37, 4
+  %niter37.ncmp.3 = icmp eq i64 %niter37.next.3, 4611686018427387900
+  br i1 %niter37.ncmp.3, label %.epil.preheader34, label %5
+
+.epil.preheader34:                                ; preds = %5, %.epil.preheader34
+  %epil.iter35 = phi i64 [ %epil.iter35.next, %.epil.preheader34 ], [ 0, %5 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter35.next = add i64 %epil.iter35, 1
+  %epil.iter35.cmp.not = icmp eq i64 %epil.iter35.next, 3
+  br i1 %epil.iter35.cmp.not, label %.preheader5.3, label %.epil.preheader34, !llvm.loop !7
+
+.preheader5.3:                                    ; preds = %.epil.preheader34
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %6
+
+6:                                                ; preds = %6, %.preheader5.3
+  %niter43 = phi i64 [ 0, %.preheader5.3 ], [ %niter43.next.3, %6 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter43.next.3 = add nuw nsw i64 %niter43, 4
+  %niter43.ncmp.3 = icmp eq i64 %niter43.next.3, 4611686018427387900
+  br i1 %niter43.ncmp.3, label %.epil.preheader39, label %6
+
+.epil.preheader39:                                ; preds = %6, %.epil.preheader39
+  %epil.iter40 = phi i64 [ %epil.iter40.next, %.epil.preheader39 ], [ 0, %6 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter40.next = add i64 %epil.iter40, 1
+  %epil.iter40.cmp.not = icmp eq i64 %epil.iter40.next, 3
+  br i1 %epil.iter40.cmp.not, label %.epilog-lcssa42, label %.epil.preheader39, !llvm.loop !8
+
+.epilog-lcssa42:                                  ; preds = %.epil.preheader39
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %7
+
+7:                                                ; preds = %7, %.epilog-lcssa42
+  %niter48 = phi i64 [ 0, %.epilog-lcssa42 ], [ %niter48.next.3, %7 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter48.next.3 = add nuw nsw i64 %niter48, 4
+  %niter48.ncmp.3 = icmp eq i64 %niter48.next.3, 4611686018427387900
+  br i1 %niter48.ncmp.3, label %.epil.preheader45, label %7
+
+.epil.preheader45:                                ; preds = %7, %.epil.preheader45
+  %epil.iter46 = phi i64 [ %epil.iter46.next, %.epil.preheader45 ], [ 0, %7 ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter46.next = add i64 %epil.iter46, 1
+  %epil.iter46.cmp.not = icmp eq i64 %epil.iter46.next, 3
+  br i1 %epil.iter46.cmp.not, label %.preheader.preheader, label %.epil.preheader45, !llvm.loop !9
+
+.preheader.preheader:                             ; preds = %.epil.preheader45
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  br label %.preheader
+
+.preheader:                                       ; preds = %.preheader, %.preheader.preheader
+  %niter53 = phi i64 [ 0, %.preheader.preheader ], [ %niter53.next.3, %.preheader ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %niter53.next.3 = add nuw nsw i64 %niter53, 4
+  %niter53.ncmp.3 = icmp eq i64 %niter53.next.3, 4611686018427387900
+  br i1 %niter53.ncmp.3, label %.preheader.epil, label %.preheader
+
+.preheader.epil:                                  ; preds = %.preheader, %.preheader.epil
+  %epil.iter50 = phi i64 [ %epil.iter50.next, %.preheader.epil ], [ 0, %.preheader ]
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  %epil.iter50.next = add i64 %epil.iter50, 1
+  %epil.iter50.cmp.not = icmp eq i64 %epil.iter50.next, 3
+  br i1 %epil.iter50.cmp.not, label %.epilog-lcssa52, label %.preheader.epil, !llvm.loop !10
+
+.epilog-lcssa52:                                  ; preds = %.preheader.epil
+  tail call void @llvm.aie2.acquire(i32 5, i32 -1)
+  tail call void @llvm.aie2.acquire(i32 51, i32 -1)
+  tail call void @llvm.aie2.release(i32 4, i32 1)
+  tail call void @llvm.aie2.release(i32 50, i32 1)
+  ret void
+}
+
+; Function Attrs: nounwind
 define void @core_2_3() local_unnamed_addr #0 {
 .preheader5:
   br label %0
@@ -85,7 +622,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter.next = add i64 %epil.iter, 1
   %epil.iter.cmp.not = icmp eq i64 %epil.iter.next, 3
-  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !1
+  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !11
 
 .epilog-lcssa:                                    ; preds = %.epil.preheader
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -144,7 +681,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter10.next = add i64 %epil.iter10, 1
   %epil.iter10.cmp.not = icmp eq i64 %epil.iter10.next, 3
-  br i1 %epil.iter10.cmp.not, label %.preheader5.1, label %.epil.preheader9, !llvm.loop !3
+  br i1 %epil.iter10.cmp.not, label %.preheader5.1, label %.epil.preheader9, !llvm.loop !12
 
 .preheader5.1:                                    ; preds = %.epil.preheader9
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -203,7 +740,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter18.next = add i64 %epil.iter18, 1
   %epil.iter18.cmp.not = icmp eq i64 %epil.iter18.next, 3
-  br i1 %epil.iter18.cmp.not, label %.epilog-lcssa20, label %.epil.preheader17, !llvm.loop !4
+  br i1 %epil.iter18.cmp.not, label %.epilog-lcssa20, label %.epil.preheader17, !llvm.loop !13
 
 .epilog-lcssa20:                                  ; preds = %.epil.preheader17
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -262,7 +799,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter24.next = add i64 %epil.iter24, 1
   %epil.iter24.cmp.not = icmp eq i64 %epil.iter24.next, 3
-  br i1 %epil.iter24.cmp.not, label %.preheader5.2, label %.epil.preheader23, !llvm.loop !5
+  br i1 %epil.iter24.cmp.not, label %.preheader5.2, label %.epil.preheader23, !llvm.loop !14
 
 .preheader5.2:                                    ; preds = %.epil.preheader23
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -321,7 +858,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter29.next = add i64 %epil.iter29, 1
   %epil.iter29.cmp.not = icmp eq i64 %epil.iter29.next, 3
-  br i1 %epil.iter29.cmp.not, label %.epilog-lcssa31, label %.epil.preheader28, !llvm.loop !6
+  br i1 %epil.iter29.cmp.not, label %.epilog-lcssa31, label %.epil.preheader28, !llvm.loop !15
 
 .epilog-lcssa31:                                  ; preds = %.epil.preheader28
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -380,7 +917,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter35.next = add i64 %epil.iter35, 1
   %epil.iter35.cmp.not = icmp eq i64 %epil.iter35.next, 3
-  br i1 %epil.iter35.cmp.not, label %.preheader5.3, label %.epil.preheader34, !llvm.loop !7
+  br i1 %epil.iter35.cmp.not, label %.preheader5.3, label %.epil.preheader34, !llvm.loop !16
 
 .preheader5.3:                                    ; preds = %.epil.preheader34
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -439,7 +976,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter40.next = add i64 %epil.iter40, 1
   %epil.iter40.cmp.not = icmp eq i64 %epil.iter40.next, 3
-  br i1 %epil.iter40.cmp.not, label %.epilog-lcssa42, label %.epil.preheader39, !llvm.loop !8
+  br i1 %epil.iter40.cmp.not, label %.epilog-lcssa42, label %.epil.preheader39, !llvm.loop !17
 
 .epilog-lcssa42:                                  ; preds = %.epil.preheader39
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -498,7 +1035,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter46.next = add i64 %epil.iter46, 1
   %epil.iter46.cmp.not = icmp eq i64 %epil.iter46.next, 3
-  br i1 %epil.iter46.cmp.not, label %.preheader.preheader, label %.epil.preheader45, !llvm.loop !9
+  br i1 %epil.iter46.cmp.not, label %.preheader.preheader, label %.epil.preheader45, !llvm.loop !18
 
 .preheader.preheader:                             ; preds = %.epil.preheader45
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -557,7 +1094,7 @@ define void @core_2_3() local_unnamed_addr #0 {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter50.next = add i64 %epil.iter50, 1
   %epil.iter50.cmp.not = icmp eq i64 %epil.iter50.next, 3
-  br i1 %epil.iter50.cmp.not, label %.epilog-lcssa52, label %.preheader.epil, !llvm.loop !10
+  br i1 %epil.iter50.cmp.not, label %.epilog-lcssa52, label %.preheader.epil, !llvm.loop !19
 
 .epilog-lcssa52:                                  ; preds = %.preheader.epil
   tail call void @llvm.aie2.acquire(i32 5, i32 -1)
@@ -665,7 +1202,7 @@ define void @core_3_2() local_unnamed_addr {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter.next = add i64 %epil.iter, 1
   %epil.iter.cmp.not = icmp eq i64 %epil.iter.next, 3
-  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !11
+  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !20
 
 .epilog-lcssa:                                    ; preds = %.epil.preheader
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
@@ -770,7 +1307,7 @@ define void @core_3_2() local_unnamed_addr {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter9.next = add i64 %epil.iter9, 1
   %epil.iter9.cmp.not = icmp eq i64 %epil.iter9.next, 3
-  br i1 %epil.iter9.cmp.not, label %.epilog-lcssa11, label %.epil.preheader8, !llvm.loop !12
+  br i1 %epil.iter9.cmp.not, label %.epilog-lcssa11, label %.epil.preheader8, !llvm.loop !21
 
 .epilog-lcssa11:                                  ; preds = %.epil.preheader8
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
@@ -880,7 +1417,7 @@ define void @core_3_2() local_unnamed_addr {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter16.next = add i64 %epil.iter16, 1
   %epil.iter16.cmp.not = icmp eq i64 %epil.iter16.next, 3
-  br i1 %epil.iter16.cmp.not, label %.epilog-lcssa18, label %.epil.preheader15, !llvm.loop !13
+  br i1 %epil.iter16.cmp.not, label %.epilog-lcssa18, label %.epil.preheader15, !llvm.loop !22
 
 .epilog-lcssa18:                                  ; preds = %.epil.preheader15
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
@@ -993,7 +1530,7 @@ define void @core_2_2() local_unnamed_addr {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter.next = add i64 %epil.iter, 1
   %epil.iter.cmp.not = icmp eq i64 %epil.iter.next, 3
-  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !14
+  br i1 %epil.iter.cmp.not, label %.epilog-lcssa, label %.epil.preheader, !llvm.loop !23
 
 .epilog-lcssa:                                    ; preds = %.epil.preheader
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
@@ -1098,7 +1635,7 @@ define void @core_2_2() local_unnamed_addr {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter9.next = add i64 %epil.iter9, 1
   %epil.iter9.cmp.not = icmp eq i64 %epil.iter9.next, 3
-  br i1 %epil.iter9.cmp.not, label %.epilog-lcssa11, label %.epil.preheader8, !llvm.loop !15
+  br i1 %epil.iter9.cmp.not, label %.epilog-lcssa11, label %.epil.preheader8, !llvm.loop !24
 
 .epilog-lcssa11:                                  ; preds = %.epil.preheader8
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
@@ -1208,7 +1745,7 @@ define void @core_2_2() local_unnamed_addr {
   tail call void @llvm.aie2.release(i32 48, i32 1)
   %epil.iter16.next = add i64 %epil.iter16, 1
   %epil.iter16.cmp.not = icmp eq i64 %epil.iter16.next, 3
-  br i1 %epil.iter16.cmp.not, label %.epilog-lcssa18, label %.epil.preheader15, !llvm.loop !16
+  br i1 %epil.iter16.cmp.not, label %.epilog-lcssa18, label %.epil.preheader15, !llvm.loop !25
 
 .epilog-lcssa18:                                  ; preds = %.epil.preheader15
   tail call void @llvm.aie2.acquire(i32 49, i32 -1)
@@ -1483,3 +2020,12 @@ attributes #1 = { mustprogress nocallback nofree nosync nounwind willreturn memo
 !14 = distinct !{!14, !2}
 !15 = distinct !{!15, !2}
 !16 = distinct !{!16, !2}
+!17 = distinct !{!17, !2}
+!18 = distinct !{!18, !2}
+!19 = distinct !{!19, !2}
+!20 = distinct !{!20, !2}
+!21 = distinct !{!21, !2}
+!22 = distinct !{!22, !2}
+!23 = distinct !{!23, !2}
+!24 = distinct !{!24, !2}
+!25 = distinct !{!25, !2}

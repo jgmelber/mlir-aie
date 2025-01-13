@@ -62,7 +62,7 @@ module {
     %out_buff_1 = aie.buffer(%tile_1_2) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "out_buff_1"} : memref<1024xf32> 
     %out_prod_lock = aie.lock(%tile_1_2, 6) {init = 2 : i32, sym_name = "out_prod_lock"}
     %out_cons_lock = aie.lock(%tile_1_2, 7) {init = 0 : i32, sym_name = "out_cons_lock"}
-    %addB1_buff_0 = aie.buffer(%tile_1_3) {address = 0 : i32, mem_bank = 0 : i32, sym_name = "addB1_buff_0"} : memref<1024xf32> 
+    %addB1_buff_0 = aie.buffer(%tile_1_3) {address = 1024 : i32, mem_bank = 0 : i32, sym_name = "addB1_buff_0"} : memref<1024xf32> 
     %addB1_buff_1 = aie.buffer(%tile_1_3) {address = 16384 : i32, mem_bank = 1 : i32, sym_name = "addB1_buff_1"} : memref<1024xf32> 
     %addB1_prod_lock = aie.lock(%tile_1_3, 2) {init = 2 : i32, sym_name = "addB1_prod_lock"}
     %addB1_cons_lock = aie.lock(%tile_1_3, 3) {init = 0 : i32, sym_name = "addB1_cons_lock"}
@@ -574,6 +574,97 @@ module {
       aie.use_lock(%addA1_cons_cons_lock, AcquireGreaterEqual, 1)
       aie.use_lock(%addA0_prod_lock, Release, 1)
       aie.use_lock(%addA1_cons_prod_lock, Release, 1)
+      aie.end
+    } {link_with = "vector_add.o"}
+    %core_1_3 = aie.core(%tile_1_3) {
+      %c0 = arith.constant 0 : index
+      %c9 = arith.constant 9 : index
+      %c1 = arith.constant 1 : index
+      %c8 = arith.constant 8 : index
+      %c2 = arith.constant 2 : index
+      cf.br ^bb1(%c0 : index)
+    ^bb1(%0: index):  // 2 preds: ^bb0, ^bb8
+      %1 = arith.cmpi slt, %0, %c8 : index
+      cf.cond_br %1, ^bb2, ^bb9
+    ^bb2:  // pred: ^bb1
+      %c0_0 = arith.constant 0 : index
+      %c9223372036854775807 = arith.constant 9223372036854775807 : index
+      %c1_1 = arith.constant 1 : index
+      %c9223372036854775806 = arith.constant 9223372036854775806 : index
+      %c2_2 = arith.constant 2 : index
+      cf.br ^bb3(%c0_0 : index)
+    ^bb3(%2: index):  // 2 preds: ^bb2, ^bb4
+      %3 = arith.cmpi slt, %2, %c9223372036854775806 : index
+      cf.cond_br %3, ^bb4, ^bb5
+    ^bb4:  // pred: ^bb3
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      %4 = arith.addi %2, %c2_2 : index
+      cf.br ^bb3(%4 : index)
+    ^bb5:  // pred: ^bb3
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      %c0_3 = arith.constant 0 : index
+      %c9223372036854775807_4 = arith.constant 9223372036854775807 : index
+      %c1_5 = arith.constant 1 : index
+      %c9223372036854775806_6 = arith.constant 9223372036854775806 : index
+      %c2_7 = arith.constant 2 : index
+      cf.br ^bb6(%c0_3 : index)
+    ^bb6(%5: index):  // 2 preds: ^bb5, ^bb7
+      %6 = arith.cmpi slt, %5, %c9223372036854775806_6 : index
+      cf.cond_br %6, ^bb7, ^bb8
+    ^bb7:  // pred: ^bb6
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      %7 = arith.addi %5, %c2_7 : index
+      cf.br ^bb6(%7 : index)
+    ^bb8:  // pred: ^bb6
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      %8 = arith.addi %0, %c2 : index
+      cf.br ^bb1(%8 : index)
+    ^bb9:  // pred: ^bb1
+      %c0_8 = arith.constant 0 : index
+      %c9223372036854775807_9 = arith.constant 9223372036854775807 : index
+      %c1_10 = arith.constant 1 : index
+      %c9223372036854775806_11 = arith.constant 9223372036854775806 : index
+      %c2_12 = arith.constant 2 : index
+      cf.br ^bb10(%c0_8 : index)
+    ^bb10(%9: index):  // 2 preds: ^bb9, ^bb11
+      %10 = arith.cmpi slt, %9, %c9223372036854775806_11 : index
+      cf.cond_br %10, ^bb11, ^bb12
+    ^bb11:  // pred: ^bb10
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
+      %11 = arith.addi %9, %c2_12 : index
+      cf.br ^bb10(%11 : index)
+    ^bb12:  // pred: ^bb10
+      aie.use_lock(%addB0_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB1_cons_lock, AcquireGreaterEqual, 1)
+      aie.use_lock(%addB0_prod_lock, Release, 1)
+      aie.use_lock(%addB1_prod_lock, Release, 1)
       aie.end
     } {link_with = "vector_add.o"}
     aiex.runtime_sequence(%arg0: memref<1xf32>, %arg1: memref<9216xf32>, %arg2: memref<27648xf32>, %arg3: memref<1xf32>, %arg4: memref<9216xf32>) {

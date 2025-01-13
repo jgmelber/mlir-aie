@@ -40,19 +40,19 @@ SECTIONS
 . = 0x70000;
 _sp_start_value_DM_stack = .;
 . += 0x400; /* stack */
+. = 0x40400;
+out_buff_0 = .;
+. += 0x4;
+. = 0x44000;
+out_buff_1 = .;
+. += 0x4;
 /* No tile with memory exists to the west. */
 . = 0x50000;
 . += 0x10000;
 . = 0x78000;
-out_buff_0 = .;
-. += 0x4;
-. = 0x7C000;
-out_buff_1 = .;
-. += 0x4;
-. = 0x71400;
 ofc02toc01_buff_0 = .;
 . += 0x4;
-. = 0x75000;
+. = 0x7C000;
 ofc02toc01_buff_1 = .;
 . += 0x4;
 . = 0x70400;

@@ -137,6 +137,25 @@ module {
       }
       aie.end
     } {link_with = "vector_add.o"}
+    %core_1_3 = aie.core(%tile_1_3) {
+      %c0 = arith.constant 0 : index
+      %c9 = arith.constant 9 : index
+      %c1 = arith.constant 1 : index
+      scf.for %arg0 = %c0 to %c9 step %c1 {
+        %c0_0 = arith.constant 0 : index
+        %c9223372036854775807 = arith.constant 9223372036854775807 : index
+        %c1_1 = arith.constant 1 : index
+        scf.for %arg1 = %c0_0 to %c9223372036854775807 step %c1_1 {
+          %0 = aie.objectfifo.acquire @addB0(Consume, 1) : !aie.objectfifosubview<memref<1024xf32>>
+          %1 = aie.objectfifo.subview.access %0[0] : !aie.objectfifosubview<memref<1024xf32>> -> memref<1024xf32>
+          %2 = aie.objectfifo.acquire @addB1(Consume, 1) : !aie.objectfifosubview<memref<1024xf32>>
+          %3 = aie.objectfifo.subview.access %2[0] : !aie.objectfifosubview<memref<1024xf32>> -> memref<1024xf32>
+          aie.objectfifo.release @addB0(Consume, 1)
+          aie.objectfifo.release @addB1(Consume, 1)
+        }
+      }
+      aie.end
+    } {link_with = "vector_add.o"}
     aiex.runtime_sequence(%arg0: memref<1xf32>, %arg1: memref<9216xf32>, %arg2: memref<27648xf32>, %arg3: memref<1xf32>, %arg4: memref<9216xf32>) {
       aiex.npu.dma_memcpy_nd(0, 0, %arg0[0, 0, 0, 0][1, 1, 1, 1][0, 0, 0, 1]) {id = 1 : i64, metadata = @in0} : memref<1xf32>
       aiex.npu.dma_memcpy_nd(0, 0, %arg1[0, 0, 0, 0][1, 1, 1, 9216][0, 0, 0, 1]) {id = 2 : i64, metadata = @in1} : memref<9216xf32>

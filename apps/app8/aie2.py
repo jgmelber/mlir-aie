@@ -134,7 +134,7 @@ def loafty():
                 m = of_m.acquire(ObjectFifoPort.Consume, 1)
                 for _ in range_(ITER_KERNEL):
                     v = of_v.acquire(ObjectFifoPort.Consume, 1)
-                    elem_out = of_addA0.acquire(ObjectFifoPort.Produce, 1)
+                    elem_out = of_addA0.acquire(ObjectFifoPort.Produce, 1) # 1024 x 32
                     kernels['scale_scalar'](v, elem_out, m, TSIZE)
                     of_addA0.release(ObjectFifoPort.Produce, 1)
                     of_v.release(ObjectFifoPort.Consume, 1)
@@ -152,7 +152,7 @@ def loafty():
                     of_w.release(ObjectFifoPort.Consume, 1)
                 of_n.release(ObjectFifoPort.Consume, 1)
 
-        @core(ct[2][1], "vector_add.o")  # Multiplying w * n
+        @core(ct[2][1], "vector_add.o")  # Adding (v*m) + (w*n) [A]
         def core_body():
             for _ in range_(ITER_M):
                 for _ in range_(ITER_KERNEL):
@@ -160,6 +160,15 @@ def loafty():
                     A1 = of_addA1.acquire(ObjectFifoPort.Consume, 1)
                     of_addA0.release(ObjectFifoPort.Consume, 1)
                     of_addA1.release(ObjectFifoPort.Consume, 1)
+
+        @core(ct[1][1], "vector_add.o")  # Adding (u*l) + A [B]
+        def core_body():
+            for _ in range_(ITER_M):
+                for _ in range_(ITER_KERNEL):
+                    B0 = of_addB0.acquire(ObjectFifoPort.Consume, 1)
+                    B1 = of_addB1.acquire(ObjectFifoPort.Consume, 1)
+                    of_addB0.release(ObjectFifoPort.Consume, 1)
+                    of_addB1.release(ObjectFifoPort.Consume, 1)
 
 
         # To/from AIE-array data movement

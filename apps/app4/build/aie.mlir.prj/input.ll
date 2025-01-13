@@ -83,6 +83,75 @@ declare void @vector_mult_aie_scalar(ptr, ptr, ptr, i32)
 
 declare void @mean(ptr, ptr, i32)
 
+define void @core_0_3() {
+  br label %1
+
+1:                                                ; preds = %27, %0
+  %2 = phi i64 [ %28, %27 ], [ 0, %0 ]
+  %3 = icmp slt i64 %2, 9223372036854775807
+  br i1 %3, label %4, label %29
+
+4:                                                ; preds = %25, %1
+  %5 = phi i64 [ %26, %25 ], [ 0, %1 ]
+  %6 = icmp slt i64 %5, 10
+  br i1 %6, label %7, label %27
+
+7:                                                ; preds = %4
+  call void @llvm.aie2.acquire(i32 48, i32 -1)
+  call void @llvm.aie2.acquire(i32 35, i32 -1)
+  br label %8
+
+8:                                                ; preds = %11, %7
+  %9 = phi i64 [ %15, %11 ], [ 0, %7 ]
+  %10 = icmp slt i64 %9, 1
+  br i1 %10, label %11, label %16
+
+11:                                               ; preds = %8
+  call void @llvm.assume(i1 true) [ "align"(ptr @ofc02toc01_buff_0, i64 32) ]
+  %12 = getelementptr float, ptr @ofc02toc01_buff_0, i64 %9
+  %13 = load float, ptr %12, align 4
+  call void @llvm.assume(i1 true) [ "align"(ptr @out_buff_0, i64 32) ]
+  %14 = getelementptr float, ptr @out_buff_0, i64 %9
+  store float %13, ptr %14, align 4
+  %15 = add i64 %9, 1
+  br label %8
+
+16:                                               ; preds = %8
+  call void @llvm.aie2.release(i32 34, i32 1)
+  call void @llvm.aie2.release(i32 49, i32 1)
+  call void @llvm.aie2.acquire(i32 48, i32 -1)
+  call void @llvm.aie2.acquire(i32 35, i32 -1)
+  br label %17
+
+17:                                               ; preds = %20, %16
+  %18 = phi i64 [ %24, %20 ], [ 0, %16 ]
+  %19 = icmp slt i64 %18, 1
+  br i1 %19, label %20, label %25
+
+20:                                               ; preds = %17
+  call void @llvm.assume(i1 true) [ "align"(ptr @ofc02toc01_buff_1, i64 32) ]
+  %21 = getelementptr float, ptr @ofc02toc01_buff_1, i64 %18
+  %22 = load float, ptr %21, align 4
+  call void @llvm.assume(i1 true) [ "align"(ptr @out_buff_1, i64 32) ]
+  %23 = getelementptr float, ptr @out_buff_1, i64 %18
+  store float %22, ptr %23, align 4
+  %24 = add i64 %18, 1
+  br label %17
+
+25:                                               ; preds = %17
+  call void @llvm.aie2.release(i32 34, i32 1)
+  call void @llvm.aie2.release(i32 49, i32 1)
+  %26 = add i64 %5, 2
+  br label %4
+
+27:                                               ; preds = %4
+  %28 = add i64 %2, 1
+  br label %1
+
+29:                                               ; preds = %1
+  ret void
+}
+
 define void @core_0_4() {
   br label %1
 
@@ -97,20 +166,20 @@ define void @core_0_4() {
   br i1 %6, label %7, label %9
 
 7:                                                ; preds = %4
-  call void @llvm.aie2.acquire(i32 52, i32 -1)
+  call void @llvm.aie2.acquire(i32 50, i32 -1)
   call void @llvm.aie2.acquire(i32 49, i32 -1)
-  call void @llvm.assume(i1 true) [ "align"(ptr @out_buff_0, i64 32) ]
+  call void @llvm.assume(i1 true) [ "align"(ptr @ofc02toc01_buff_0, i64 32) ]
   call void @llvm.assume(i1 true) [ "align"(ptr @ofc11toc02_cons_buff_0, i64 32) ]
-  call void @mean(ptr @ofc11toc02_cons_buff_0, ptr @out_buff_0, i32 1024)
+  call void @mean(ptr @ofc11toc02_cons_buff_0, ptr @ofc02toc01_buff_0, i32 1024)
   call void @llvm.aie2.release(i32 48, i32 1)
-  call void @llvm.aie2.release(i32 53, i32 1)
-  call void @llvm.aie2.acquire(i32 52, i32 -1)
+  call void @llvm.aie2.release(i32 51, i32 1)
+  call void @llvm.aie2.acquire(i32 50, i32 -1)
   call void @llvm.aie2.acquire(i32 49, i32 -1)
-  call void @llvm.assume(i1 true) [ "align"(ptr @out_buff_1, i64 32) ]
+  call void @llvm.assume(i1 true) [ "align"(ptr @ofc02toc01_buff_1, i64 32) ]
   call void @llvm.assume(i1 true) [ "align"(ptr @ofc11toc02_cons_buff_1, i64 32) ]
-  call void @mean(ptr @ofc11toc02_cons_buff_1, ptr @out_buff_1, i32 1024)
+  call void @mean(ptr @ofc11toc02_cons_buff_1, ptr @ofc02toc01_buff_1, i32 1024)
   call void @llvm.aie2.release(i32 48, i32 1)
-  call void @llvm.aie2.release(i32 53, i32 1)
+  call void @llvm.aie2.release(i32 51, i32 1)
   %8 = add i64 %5, 2
   br label %4
 

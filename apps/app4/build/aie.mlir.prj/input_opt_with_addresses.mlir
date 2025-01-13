@@ -67,28 +67,102 @@ module attributes {llvm.target_triple = "aie2"} {
   llvm.func @vector_add_aie_scalar(!llvm.ptr, !llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
   llvm.func @vector_mult_aie_scalar(!llvm.ptr, !llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
   llvm.func @mean(!llvm.ptr, !llvm.ptr, i32) attributes {sym_visibility = "private"}
+  llvm.func @core_0_3() {
+    %0 = llvm.mlir.addressof @out_buff_1 : !llvm.ptr
+    %1 = llvm.mlir.addressof @ofc02toc01_buff_1 : !llvm.ptr
+    %2 = llvm.mlir.addressof @out_buff_0 : !llvm.ptr
+    %3 = llvm.mlir.constant(32 : index) : i64
+    %4 = llvm.mlir.constant(true) : i1
+    %5 = llvm.mlir.addressof @ofc02toc01_buff_0 : !llvm.ptr
+    %6 = llvm.mlir.constant(49 : i32) : i32
+    %7 = llvm.mlir.constant(34 : i32) : i32
+    %8 = llvm.mlir.constant(35 : i32) : i32
+    %9 = llvm.mlir.constant(48 : i32) : i32
+    %10 = llvm.mlir.constant(1 : i32) : i32
+    %11 = llvm.mlir.constant(-1 : i32) : i32
+    %12 = llvm.mlir.constant(2 : index) : i64
+    %13 = llvm.mlir.constant(10 : index) : i64
+    %14 = llvm.mlir.constant(0 : index) : i64
+    %15 = llvm.mlir.constant(9223372036854775807 : index) : i64
+    %16 = llvm.mlir.constant(1 : index) : i64
+    llvm.br ^bb1(%14 : i64)
+  ^bb1(%17: i64):  // 2 preds: ^bb0, ^bb10
+    %18 = llvm.icmp "slt" %17, %15 : i64
+    llvm.cond_br %18, ^bb2(%14 : i64), ^bb11
+  ^bb2(%19: i64):  // 2 preds: ^bb1, ^bb9
+    %20 = llvm.icmp "slt" %19, %13 : i64
+    llvm.cond_br %20, ^bb3, ^bb10
+  ^bb3:  // pred: ^bb2
+    llvm.call @llvm.aie2.acquire(%9, %11) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%8, %11) : (i32, i32) -> ()
+    llvm.br ^bb4(%14 : i64)
+  ^bb4(%21: i64):  // 2 preds: ^bb3, ^bb5
+    %22 = llvm.icmp "slt" %21, %16 : i64
+    llvm.cond_br %22, ^bb5, ^bb6
+  ^bb5:  // pred: ^bb4
+    %23 = llvm.getelementptr %5[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1 x f32>
+    llvm.intr.assume %4 ["align"(%23, %3 : !llvm.ptr, i64)] : i1
+    %24 = llvm.getelementptr %23[%21] : (!llvm.ptr, i64) -> !llvm.ptr, f32
+    %25 = llvm.load %24 : !llvm.ptr -> f32
+    %26 = llvm.getelementptr %2[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1 x f32>
+    llvm.intr.assume %4 ["align"(%26, %3 : !llvm.ptr, i64)] : i1
+    %27 = llvm.getelementptr %26[%21] : (!llvm.ptr, i64) -> !llvm.ptr, f32
+    llvm.store %25, %27 : f32, !llvm.ptr
+    %28 = llvm.add %21, %16 : i64
+    llvm.br ^bb4(%28 : i64)
+  ^bb6:  // pred: ^bb4
+    llvm.call @llvm.aie2.release(%7, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%6, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%9, %11) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.acquire(%8, %11) : (i32, i32) -> ()
+    llvm.br ^bb7(%14 : i64)
+  ^bb7(%29: i64):  // 2 preds: ^bb6, ^bb8
+    %30 = llvm.icmp "slt" %29, %16 : i64
+    llvm.cond_br %30, ^bb8, ^bb9
+  ^bb8:  // pred: ^bb7
+    %31 = llvm.getelementptr %1[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1 x f32>
+    llvm.intr.assume %4 ["align"(%31, %3 : !llvm.ptr, i64)] : i1
+    %32 = llvm.getelementptr %31[%29] : (!llvm.ptr, i64) -> !llvm.ptr, f32
+    %33 = llvm.load %32 : !llvm.ptr -> f32
+    %34 = llvm.getelementptr %0[0, 0] : (!llvm.ptr) -> !llvm.ptr, !llvm.array<1 x f32>
+    llvm.intr.assume %4 ["align"(%34, %3 : !llvm.ptr, i64)] : i1
+    %35 = llvm.getelementptr %34[%29] : (!llvm.ptr, i64) -> !llvm.ptr, f32
+    llvm.store %33, %35 : f32, !llvm.ptr
+    %36 = llvm.add %29, %16 : i64
+    llvm.br ^bb7(%36 : i64)
+  ^bb9:  // pred: ^bb7
+    llvm.call @llvm.aie2.release(%7, %10) : (i32, i32) -> ()
+    llvm.call @llvm.aie2.release(%6, %10) : (i32, i32) -> ()
+    %37 = llvm.add %19, %12 : i64
+    llvm.br ^bb2(%37 : i64)
+  ^bb10:  // pred: ^bb2
+    %38 = llvm.add %17, %16 : i64
+    llvm.br ^bb1(%38 : i64)
+  ^bb11:  // pred: ^bb1
+    llvm.return
+  }
   llvm.func @core_0_4() {
     %0 = llvm.mlir.addressof @ofc11toc02_cons_buff_1 : !llvm.ptr
-    %1 = llvm.mlir.addressof @out_buff_1 : !llvm.ptr
+    %1 = llvm.mlir.addressof @ofc02toc01_buff_1 : !llvm.ptr
     %2 = llvm.mlir.addressof @ofc11toc02_cons_buff_0 : !llvm.ptr
     %3 = llvm.mlir.constant(32 : index) : i64
     %4 = llvm.mlir.constant(true) : i1
-    %5 = llvm.mlir.addressof @out_buff_0 : !llvm.ptr
-    %6 = llvm.mlir.constant(53 : i32) : i32
+    %5 = llvm.mlir.addressof @ofc02toc01_buff_0 : !llvm.ptr
+    %6 = llvm.mlir.constant(51 : i32) : i32
     %7 = llvm.mlir.constant(48 : i32) : i32
     %8 = llvm.mlir.constant(49 : i32) : i32
-    %9 = llvm.mlir.constant(52 : i32) : i32
+    %9 = llvm.mlir.constant(50 : i32) : i32
     %10 = llvm.mlir.constant(1 : i32) : i32
     %11 = llvm.mlir.constant(1024 : i32) : i32
     %12 = llvm.mlir.constant(-1 : i32) : i32
     %13 = llvm.mlir.constant(2 : index) : i64
     %14 = llvm.mlir.constant(10 : index) : i64
     %15 = llvm.mlir.constant(0 : index) : i64
-    %16 = llvm.mlir.constant(9223372036854775807 : index) : i64
-    %17 = llvm.mlir.constant(1 : index) : i64
+    %16 = llvm.mlir.constant(1 : index) : i64
+    %17 = llvm.mlir.constant(9223372036854775807 : index) : i64
     llvm.br ^bb1(%15 : i64)
   ^bb1(%18: i64):  // 2 preds: ^bb0, ^bb4
-    %19 = llvm.icmp "slt" %18, %16 : i64
+    %19 = llvm.icmp "slt" %18, %17 : i64
     llvm.cond_br %19, ^bb2(%15 : i64), ^bb5
   ^bb2(%20: i64):  // 2 preds: ^bb1, ^bb3
     %21 = llvm.icmp "slt" %20, %14 : i64
@@ -115,7 +189,7 @@ module attributes {llvm.target_triple = "aie2"} {
     %26 = llvm.add %20, %13 : i64
     llvm.br ^bb2(%26 : i64)
   ^bb4:  // pred: ^bb2
-    %27 = llvm.add %18, %17 : i64
+    %27 = llvm.add %18, %16 : i64
     llvm.br ^bb1(%27 : i64)
   ^bb5:  // pred: ^bb1
     llvm.return

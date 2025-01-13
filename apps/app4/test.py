@@ -38,6 +38,7 @@ def main(opts):
     INOUT0_SIZE = INOUT0_VOLUME * INOUT0_DATATYPE().itemsize
     INOUT1_SIZE = INOUT1_VOLUME * INOUT1_DATATYPE().itemsize
     INOUT2_SIZE = INOUT2_VOLUME * INOUT2_DATATYPE().itemsize
+    INOUT3_SIZE = 9216 * 256 * 256 * INOUT2_DATATYPE().itemsize
 
     OUT_SIZE = INOUT0_SIZE
     OUT_DATATYPE = INOUT2_DATATYPE
@@ -132,8 +133,9 @@ def main(opts):
         #         errors = errors + 1
         # print(f"errors in iter {i}: {errors}")
         # print("cut")
-        # for j in entire_buffer[:18]:
-        #     print(j)
+        if(i == 13):
+            for j in entire_buffer[:9]:
+                print(j)
         npu_time = stop - start
         npu_time_total = npu_time_total + npu_time
         npu_time_min = min(npu_time_min, npu_time)

@@ -43,7 +43,7 @@ _sp_start_value_DM_stack = .;
 /* No tile with memory exists to the south. */
 . = 0x40000;
 . += 0x10000;
-. = 0x60000;
+. = 0x60400;
 addB1_buff_0 = .;
 . += 0x1000;
 . = 0x64000;
