@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rows_0',['rows',['../classiron_1_1device_1_1device_1_1NPUBase.html#a0ff0f773c6ee5c8ce9c6dfa693239567',1,'iron::device::device::NPUBase']]]
+  ['name_0',['name',['../classiron_1_1dataflow_1_1objectfifo_1_1ObjectFifo.html#a737a0a6fc7d916320bb88228ab55c8ae',1,'iron::dataflow::objectfifo::ObjectFifo']]]
 ];

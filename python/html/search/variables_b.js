@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tile_0',['tile',['../classiron_1_1runtime_1_1endpoint_1_1RuntimeEndpoint.html#ac4ba26dacbeae15227be94efcc3ddc55',1,'iron::runtime::endpoint::RuntimeEndpoint']]]
+  ['placementtile_0',['PlacementTile',['../namespaceiron_1_1device_1_1tile.html#ab9bfbc80972b99cb357c7b8c6469e1a9',1,'iron::device::tile']]]
 ];

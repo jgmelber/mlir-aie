@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['message_0',['message',['../classiron_1_1placeable_1_1AlreadyPlacedError.html#a467c56f54f73f8f3affc33157deb96ab',1,'iron.placeable.AlreadyPlacedError.message'],['../classiron_1_1resolvable_1_1NotResolvedError.html#ad2d4e87bd0cb19836b84a08ee3c2512f',1,'iron.resolvable.NotResolvedError.message']]]
+  ['initial_5fvalue_0',['initial_value',['../classiron_1_1worker_1_1WorkerRuntimeBarrier.html#a12e97eb033a09a86975721371dc2ab99',1,'iron::worker::WorkerRuntimeBarrier']]],
+  ['iron_5fcache_5fdir_1',['IRON_CACHE_DIR',['../namespaceiron_1_1jit.html#ad4996a91797d3c476d40857dd3b3d113',1,'iron::jit']]]
 ];
