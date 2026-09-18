@@ -598,27 +598,30 @@ class LitConfigHelper:
         """Add host compiler substitutions for tests that build host executables.
 
         AIE/Peano tool directories are added to PATH for device-side tools, so
-        host-side tests should not rely on a bare ``clang`` resolving to the
+        host-side tests should not rely on a bare ``clang++`` resolving to the
         host LLVM compiler. This substitution keeps host compilation explicit
-        and preserves Windows executable suffix handling.
+        and preserves Windows executable suffix handling. Using ``clang++``
+        means run.lit files do not need to pass ``-std=c++XX`` just to enable
+        C++ mode, and ``-lstdc++`` need not be listed explicitly in link flags.
         """
-        host_clang = os.path.join(
-            config_obj.llvm_tools_dir, f"clang{config_obj.llvm_exe_ext}"
+        host_clangxx = os.path.join(
+            config_obj.llvm_tools_dir, f"clang++{config_obj.llvm_exe_ext}"
         )
-        if not os.path.exists(host_clang):
-            host_clang = shutil.which("clang") or "clang"
+        if not os.path.exists(host_clangxx):
+            host_clangxx = shutil.which("clang++") or "clang++"
         config_obj.substitutions.append(
-            ("%host_clang", LitConfigHelper._quote_lit_arg(host_clang))
+            ("%host_clang", LitConfigHelper._quote_lit_arg(host_clangxx))
         )
 
     @staticmethod
     def setup_host_link_substitution(config_obj) -> None:
         """Add host linker flags for tests that build XRT host executables.
 
-        Linux-hosted tests link librt, libstdc++, and libm explicitly because
-        the host compiler substitution resolves to clang rather than clang++.
-        Windows-hosted tests link against CMake-built dynamic MSVC libraries,
-        matching CMake's default /MD runtime selection.
+        Linux-hosted tests link librt and libm explicitly; libstdc++ is omitted
+        because the host compiler substitution now resolves to ``clang++``,
+        which links the C++ standard library automatically. Windows-hosted tests
+        link against CMake-built dynamic MSVC libraries, matching CMake's
+        default /MD runtime selection.
         """
         if os.name == "nt":
             host_link_flags = " ".join(
@@ -631,7 +634,7 @@ class LitConfigHelper:
                 ]
             )
         else:
-            host_link_flags = "-lrt -lstdc++ -lm"
+            host_link_flags = "-lrt -lm"
         config_obj.substitutions.append(("%host_link_flags", host_link_flags))
 
     @staticmethod
