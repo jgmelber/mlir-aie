@@ -223,7 +223,7 @@ std::optional<int> xilinx::AIE::parseTransactionBinary(
         i += opSize;
         break;
       }
-      // Not in the vendored third_party/aie-rt enum (though the driver
+      // Not in the vendored third_party/aie-codegen enum (though the driver
       // protocol defines it); can't add it without forking upstream.
       case 0x8: { // NOLINT(clang-diagnostic-switch):
                   // XAie_TxnOpcode::XAIE_IO_LOAD_PDI
@@ -348,7 +348,7 @@ std::optional<int> xilinx::AIE::parseTransactionBinary(
         i += opSize;
         break;
       }
-      // Not in the vendored third_party/aie-rt enum (though the driver
+      // Not in the vendored third_party/aie-codegen enum (though the driver
       // protocol defines it); can't add it without forking upstream.
       case 0x8: { // NOLINT(clang-diagnostic-switch):
                   // XAie_TxnOpcode::XAIE_IO_LOAD_PDI
